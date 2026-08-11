@@ -41,7 +41,7 @@
     .dk-nav-wrap { position: fixed; top: 18px; left: 0; right: 0; z-index: 100; display: flex; justify-content: center; padding: 0 20px; pointer-events: none; }
     .dk-nav { display: flex; align-items: center; height: 58px; background: rgba(255,255,255,0.97); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(5,56,107,0.12); border-radius: 14px; padding: 0 10px 0 18px; gap: 0; box-shadow: 0 4px 24px rgba(5,56,107,0.13); pointer-events: all; width: 100%; max-width: 960px; }
     .dk-brand { display: flex; align-items: center; gap: 10px; color: var(--dk-navy); font-weight: 800; font-size: 18px; flex: none; text-decoration: none; white-space: nowrap; }
-    .dk-brand .logo { width: 34px; height: 34px; border-radius: 50%; background: var(--dk-green); display: flex; align-items: center; justify-content: center; font-weight: 900; color: #042a52; font-size: 14px; flex: none; }
+    .dk-brand .logo { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #e8f5e9 0%, #f0fdf4 100%); border: 1.5px solid rgba(29,168,81,0.25); display: flex; align-items: center; justify-content: center; flex: none; }
     .dk-brand span { color: var(--dk-green-dark); }
     .dk-nav-center { flex: 1; display: flex; justify-content: center; align-items: center; gap: 0; }
     .dk-nav-center a { color: rgba(5,56,107,0.82); font-weight: 500; font-size: 14px; padding: 7px 13px; border-radius: 8px; white-space: nowrap; transition: all 0.15s; }
@@ -65,17 +65,17 @@
       .dk-nav-mobile a:last-child { border-bottom: 0; margin-top: 6px; text-align: center; border-radius: 999px; }
     }
 
-    /* DROPDOWN */
+    /* DROPDOWN — selaras navbar putih */
     .has-drop { position: relative; }
     .has-drop > a { display: flex; align-items: center; gap: 3px; }
     .has-drop > a::after { content: "expand_more"; font-family: "Material Symbols Outlined"; font-size: 16px; transition: transform 0.2s; color: rgba(5,56,107,0.6); }
     .has-drop:hover > a::after, .has-drop.open > a::after { transform: rotate(180deg); }
-    .drop-menu { display: none; position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%); min-width: 220px; background: rgba(4,42,82,0.97); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 8px; box-shadow: 0 16px 40px rgba(0,0,0,0.35); z-index: 200; }
+    .drop-menu { display: none; position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%); min-width: 230px; background: #fff; border: 1px solid rgba(5,56,107,0.1); border-radius: 14px; padding: 8px; box-shadow: 0 8px 32px rgba(5,56,107,0.13); z-index: 200; }
     .has-drop:hover .drop-menu, .has-drop.open .drop-menu { display: block; }
-    .drop-menu a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; color: rgba(255,255,255,0.85); font-size: 14px; font-weight: 500; white-space: nowrap; }
-    .drop-menu a:hover { background: rgba(255,255,255,0.1); color: #fff; }
-    .drop-menu a .material-symbols-outlined { font-size: 18px; color: var(--dk-green); }
-    .drop-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 6px 0; }
+    .drop-menu a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; color: rgba(5,56,107,0.85); font-size: 14px; font-weight: 500; white-space: nowrap; }
+    .drop-menu a:hover { background: rgba(5,56,107,0.06); color: var(--dk-navy); }
+    .drop-menu a .material-symbols-outlined { font-size: 18px; color: var(--dk-green-dark); }
+    .drop-divider { height: 1px; background: rgba(5,56,107,0.08); margin: 6px 0; }
 
     /* HERO */
     .dk-hero { background: linear-gradient(160deg, var(--dk-navy) 0%, var(--dk-navy-dark) 55%, #03203f 100%); color: #fff; padding: 76px 0 90px; position: relative; overflow: hidden; }
@@ -190,7 +190,12 @@
 
   <div class="dk-nav-wrap">
   <nav class="dk-nav">
-    <a class="dk-brand" href="landing.html"><span class="logo">FZ</span>Faza<span>Cloud</span></a>
+    <a class="dk-brand" href="landing.html"><span class="logo">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M19 18H6a4 4 0 0 1-.5-7.96A6 6 0 0 1 18 12h1a3 3 0 0 1 0 6z" fill="#042a52"/>
+    <path d="M13 9l-3 5h3l-2 4 5-6h-3l2-3z" fill="#1da851"/>
+  </svg>
+</span>Faza<span>Cloud</span></a>
     <div class="dk-nav-center">
       <div class="has-drop">
         <a href="#fitur">Fitur</a>
@@ -385,7 +390,12 @@
     <div class="container">
       <div class="dk-footer-grid">
         <div>
-          <a class="dk-brand" href="landing.html" style="margin-bottom:14px;display:inline-flex"><span class="logo">FZ</span>Faza<span>Cloud</span></a>
+          <a class="dk-brand" href="landing.html" style="margin-bottom:14px;display:inline-flex"><span class="logo">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M19 18H6a4 4 0 0 1-.5-7.96A6 6 0 0 1 18 12h1a3 3 0 0 1 0 6z" fill="#042a52"/>
+    <path d="M13 9l-3 5h3l-2 4 5-6h-3l2-3z" fill="#1da851"/>
+  </svg>
+</span>Faza<span>Cloud</span></a>
           <p style="line-height:1.6;color:rgba(255,255,255,0.6)">Platform pembuatan website sekolah sekali klik, dengan CMS, PPDB online, dan jurnal digital terintegrasi.</p>
         </div>
         <div>
