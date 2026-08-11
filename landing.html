@@ -39,17 +39,17 @@
 
     /* NAV — floating pill seperti digitalku.com */
     .dk-nav-wrap { position: fixed; top: 18px; left: 0; right: 0; z-index: 100; display: flex; justify-content: center; padding: 0 20px; pointer-events: none; }
-    .dk-nav { display: flex; align-items: center; height: 58px; background: rgba(4, 42, 82, 0.92); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 0 10px 0 18px; gap: 0; box-shadow: 0 8px 32px rgba(0,0,0,0.28); pointer-events: all; width: 100%; max-width: 960px; }
-    .dk-brand { display: flex; align-items: center; gap: 10px; color: #fff; font-weight: 800; font-size: 18px; flex: none; text-decoration: none; white-space: nowrap; }
+    .dk-nav { display: flex; align-items: center; height: 58px; background: rgba(255,255,255,0.97); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(5,56,107,0.12); border-radius: 14px; padding: 0 10px 0 18px; gap: 0; box-shadow: 0 4px 24px rgba(5,56,107,0.13); pointer-events: all; width: 100%; max-width: 960px; }
+    .dk-brand { display: flex; align-items: center; gap: 10px; color: var(--dk-navy); font-weight: 800; font-size: 18px; flex: none; text-decoration: none; white-space: nowrap; }
     .dk-brand .logo { width: 34px; height: 34px; border-radius: 50%; background: var(--dk-green); display: flex; align-items: center; justify-content: center; font-weight: 900; color: #042a52; font-size: 14px; flex: none; }
-    .dk-brand span { color: var(--dk-green); }
+    .dk-brand span { color: var(--dk-green-dark); }
     .dk-nav-center { flex: 1; display: flex; justify-content: center; align-items: center; gap: 0; }
-    .dk-nav-center a { color: rgba(255,255,255,0.82); font-weight: 500; font-size: 14px; padding: 7px 13px; border-radius: 999px; white-space: nowrap; transition: all 0.15s; }
-    .dk-nav-center a:hover { color: #fff; background: rgba(255,255,255,0.1); }
+    .dk-nav-center a { color: rgba(5,56,107,0.82); font-weight: 500; font-size: 14px; padding: 7px 13px; border-radius: 8px; white-space: nowrap; transition: all 0.15s; }
+    .dk-nav-center a:hover { color: var(--dk-navy); background: rgba(5,56,107,0.08); }
     .dk-nav-right { flex: none; display: flex; align-items: center; gap: 6px; }
-    .dk-nav-right a.login-link { color: rgba(255,255,255,0.82); font-weight: 500; font-size: 14px; padding: 7px 13px; border-radius: 999px; transition: all 0.15s; }
-    .dk-nav-right a.login-link:hover { color: #fff; background: rgba(255,255,255,0.1); }
-    .dk-toggle { display: none; background: none; border: 0; color: #fff; cursor: pointer; padding: 6px; margin-left: 4px; }
+    .dk-nav-right a.login-link { color: rgba(5,56,107,0.82); font-weight: 500; font-size: 14px; padding: 7px 13px; border-radius: 8px; transition: all 0.15s; }
+    .dk-nav-right a.login-link:hover { color: var(--dk-navy); background: rgba(5,56,107,0.08); }
+    .dk-toggle { display: none; background: none; border: 0; color: var(--dk-navy); cursor: pointer; padding: 6px; margin-left: 4px; }
     /* hero perlu padding-top agar tidak tertutup nav */
     .dk-hero { padding-top: 110px !important; }
     .dk-nav-mobile { display: none; }
@@ -68,7 +68,7 @@
     /* DROPDOWN */
     .has-drop { position: relative; }
     .has-drop > a { display: flex; align-items: center; gap: 3px; }
-    .has-drop > a::after { content: "expand_more"; font-family: "Material Symbols Outlined"; font-size: 16px; transition: transform 0.2s; }
+    .has-drop > a::after { content: "expand_more"; font-family: "Material Symbols Outlined"; font-size: 16px; transition: transform 0.2s; color: rgba(5,56,107,0.6); }
     .has-drop:hover > a::after, .has-drop.open > a::after { transform: rotate(180deg); }
     .drop-menu { display: none; position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%); min-width: 220px; background: rgba(4,42,82,0.97); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 8px; box-shadow: 0 16px 40px rgba(0,0,0,0.35); z-index: 200; }
     .has-drop:hover .drop-menu, .has-drop.open .drop-menu { display: block; }
@@ -206,7 +206,7 @@
       <div class="has-drop">
         <a href="#jurnal">Jurnal</a>
         <div class="drop-menu">
-          <a href="https://jurnalmadrasah.web.id" target="_blank" rel="noopener"><span class="material-symbols-outlined">menu_book</span> jurnalmadrasah.web.id</a>
+          <a href="https://jurnalmadrasah.web.id" target="_blank" rel="noopener"><span class="material-symbols-outlined">menu_book</span> Jurnal Madrasah</a>
           <div class="drop-divider"></div>
           <a href="https://jurnalmadrasah.web.id" target="_blank" rel="noopener"><span class="material-symbols-outlined">science</span> Jurnal Ilmiah</a>
           <a href="https://jurnalmadrasah.web.id" target="_blank" rel="noopener"><span class="material-symbols-outlined">article</span> Publikasi Guru</a>
@@ -282,7 +282,7 @@
         <div class="fitur"><div class="ic" style="background:#fff3e0;color:#ef6c00"><span class="material-symbols-outlined">app_registration</span></div><h3>PPDB Online</h3><p>Formulir pendaftaran siswa baru masuk otomatis ke panel admin, dengan status &amp; export CSV.</p></div>
         <div class="fitur"><div class="ic" style="background:#f3e5f5;color:#7b1fa2"><span class="material-symbols-outlined">palette</span></div><h3>Tema &amp; Kustomisasi</h3><p>Pilih tema siap pakai atau atur warna, font, hero, dan footer sesuai identitas sekolah Anda.</p></div>
         <div class="fitur"><div class="ic" style="background:#e0f7fa;color:#00838f"><span class="material-symbols-outlined">cloud_upload</span></div><h3>Upload Gambar Mudah</h3><p>Unggah foto hero, artikel, guru, dan galeri langsung dari panel — lengkap panduan ukuran.</p></div>
-        <div class="fitur"><div class="ic" style="background:#e8f5e9;color:#1b5e20"><span class="material-symbols-outlined">menu_book</span></div><h3>Jurnal Digital</h3><p>Kelola jurnal ilmiah dan publikasi sekolah terintegrasi lewat platform jurnalmadrasah.web.id.</p></div>
+        <div class="fitur"><div class="ic" style="background:#e8f5e9;color:#1b5e20"><span class="material-symbols-outlined">menu_book</span></div><h3>Jurnal Digital</h3><p>Kelola jurnal ilmiah dan publikasi sekolah terintegrasi lewat platform Jurnal Madrasah.</p></div>
       </div>
     </div>
   </section>
@@ -296,7 +296,7 @@
       <div class="langkah">
         <div class="step"><div class="no">1</div><h3>Daftarkan Lembaga</h3><p>Isi nama sekolah, email, dan kata sandi. Pilih subdomain gratis atau pakai domain custom Anda.</p></div>
         <div class="step"><div class="no">2</div><h3>Website Otomatis Jadi</h3><p>Sistem langsung membuatkan website profil lengkap dengan tema profesional. Tanpa menunggu.</p></div>
-        <div class="step"><div class="no">3</div><h3>Atur Konten Sendiri</h3><p>Login ke panel admin, ganti nama, logo, warna, dan konten. Kelola jurnal di jurnalmadrasah.web.id.</p></div>
+        <div class="step"><div class="no">3</div><h3>Atur Konten Sendiri</h3><p>Login ke panel admin, ganti nama, logo, warna, dan konten. Kelola jurnal di Jurnal Madrasah.</p></div>
       </div>
     </div>
   </section>
@@ -307,9 +307,9 @@
       <div class="jurnal">
         <div>
           <span class="tag">TERINTEGRASI</span>
-          <h2>Kelola Jurnal Sekolah di jurnalmadrasah.web.id</h2>
-          <p>Setiap website sekolah yang Anda buat terhubung ke platform jurnalmadrasah.web.id untuk mengelola jurnal ilmiah, publikasi guru, dan karya tulis siswa — semua dari satu dasbor.</p>
-          <a class="btn btn-green btn-lg" href="https://jurnalmadrasah.web.id" target="_blank" rel="noopener">Buka jurnalmadrasah.web.id <span class="material-symbols-outlined">open_in_new</span></a>
+          <h2>Kelola Jurnal Sekolah di Jurnal Madrasah</h2>
+          <p>Setiap website sekolah yang Anda buat terhubung ke platform Jurnal Madrasah untuk mengelola jurnal ilmiah, publikasi guru, dan karya tulis siswa — semua dari satu dasbor.</p>
+          <a class="btn btn-green btn-lg" href="https://jurnalmadrasah.web.id" target="_blank" rel="noopener">Buka Jurnal Madrasah <span class="material-symbols-outlined">open_in_new</span></a>
         </div>
         <div class="mock">
           <div class="row"><span>Jurnal Pendidikan Vol. 4 No. 2</span><b>Terbit</b></div>
@@ -348,7 +348,7 @@
           <ul>
             <li><span class="material-symbols-outlined">check_circle</span> Semua fitur Gratis</li>
             <li><span class="material-symbols-outlined">check_circle</span> Domain custom sendiri</li>
-            <li><span class="material-symbols-outlined">check_circle</span> Integrasi jurnalmadrasah.web.id</li>
+            <li><span class="material-symbols-outlined">check_circle</span> Integrasi Jurnal Madrasah</li>
             <li><span class="material-symbols-outlined">check_circle</span> Upload gambar tanpa batas</li>
             <li><span class="material-symbols-outlined">check_circle</span> Dukungan prioritas</li>
           </ul>
