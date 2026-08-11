@@ -21,7 +21,7 @@
     { href: "ppdb.html", icon: "app_registration", label: "Pendaftar PPDB" },
     { href: "pesan.html", icon: "mail", label: "Pesan Masuk" },
     { href: "tema.html", icon: "palette", label: "Tema & Tampilan" },
-    { href: "https://jurnal.cc.cd", icon: "menu_book", label: "Jurnal (jurnal.cc.cd)", external: true },
+    { href: "https://jurnalmadrasah.web.id", icon: "menu_book", label: "Jurnal (jurnalmadrasah.web.id)", external: true },
     { href: "pengaturan.html", icon: "settings", label: "Pengaturan Situs" }
   ];
 
