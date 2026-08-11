@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Berita &amp; Pengumuman — SMA Nusantara</title>
+  <meta name="description" content="Kabar terbaru, prestasi, dan pengumuman resmi SMA Nusantara.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <script src="assets/js/theme.js"></script>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/themes.css">
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="container">
+      <div class="topbar-left">
+        <span><span class="material-symbols-outlined">call</span> (021) 555-1234</span>
+        <span class="hide-m"><span class="material-symbols-outlined">mail</span> info@smanusantara.sch.id</span>
+      </div>
+      <div class="topbar-links">
+        <a href="kesiswaan.html">Alumni</a>
+        <a href="kontak.html">Portal Guru</a>
+        <a href="kontak.html">Kontak</a>
+        <a href="admin/login.html" style="color:var(--academic-gold)"><span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;margin-right:4px">lock</span>Login</a>
+      </div>
+    </div>
+  </div>
+
+  <header class="mainnav">
+    <div class="container">
+      <a class="brand" href="index.html">
+        <span class="logo-badge">SN</span>
+        <span class="brand-text"><span class="b1">SMA NUSANTARA</span><span class="b2">Terakreditasi A</span></span>
+      </a>
+      <button class="nav-toggle" aria-label="Buka menu" aria-expanded="false"><span class="material-symbols-outlined">menu</span></button>
+      <nav class="nav-links">
+        <a href="index.html">Beranda</a>
+        <a href="profil.html">Profil</a>
+        <a href="akademik.html">Akademik</a>
+        <a href="kesiswaan.html">Kesiswaan</a>
+        <a href="berita.html" class="active">Berita</a>
+        <a href="kontak.html">Kontak</a>
+        <a href="ppdb.html" class="nav-cta">PPDB 2024</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero" style="background-image:url('assets/img/berita-lab-biologi.jpg')">
+      <div class="container">
+        <div class="breadcrumb"><a href="index.html">Beranda</a> <span class="material-symbols-outlined">chevron_right</span> Berita</div>
+        <h1>Berita &amp; Pengumuman</h1>
+        <p>Ikuti kabar terbaru seputar kegiatan, prestasi, dan informasi resmi sekolah.</p>
+      </div>
+    </section>
+
+    <!-- Filter -->
+    <section class="section bg-white" style="padding-block:24px;border-bottom:1px solid var(--surface-container)">
+      <div class="container" style="display:flex;flex-direction:column;gap:16px">
+        <div style="position:relative;max-width:480px">
+          <span class="material-symbols-outlined" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--outline)">search</span>
+          <input data-news-search type="text" placeholder="Cari berita atau pengumuman..." style="width:100%;padding:12px 16px 12px 44px;border-radius:99px;border:1px solid var(--outline-variant);background:var(--surface-container-low);font-family:var(--font-body);font-size:15px;color:var(--on-surface)">
+        </div>
+        <div class="chip-row" data-filter-chips>
+          <button class="chip active" data-kat="semua">Semua</button>
+          <button class="chip" data-kat="akademik">Akademik</button>
+          <button class="chip" data-kat="kesiswaan">Kesiswaan</button>
+          <button class="chip" data-kat="prestasi">Prestasi</button>
+          <button class="chip" data-kat="pengumuman">Pengumuman</button>
+          <button class="chip" data-kat="alumni">Alumni</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Berita Utama -->
+    <section class="section" style="padding-bottom:24px">
+      <div class="container">
+        <div class="section-head"><h2>Berita Utama</h2></div>
+        <div class="grid cols-2 gap-lg" data-cms-berita-utama>
+          <article class="news-card" data-kategori="prestasi">
+            <div class="thumb" style="background-image:url('assets/img/berita-lab-biologi.jpg')">
+              <span class="label-tag gold">Prestasi</span>
+            </div>
+            <div class="body">
+              <h3>Tim Olimpiade Sains SMA Nusantara Raih Emas di Tingkat Nasional</h3>
+              <span class="date"><span class="material-symbols-outlined">calendar_today</span> 12 Okt 2024</span>
+            </div>
+          </article>
+          <article class="news-card" data-kategori="akademik">
+            <div class="thumb" style="background-image:url('assets/img/berita-olimpiade-sains.jpg')">
+              <span class="label-tag">Akademik</span>
+            </div>
+            <div class="body">
+              <h3><a href="artikel.html?id=lab-biologi-internasional">Peresmian Laboratorium Biologi Bertaraf Internasional</a></h3>
+              <span class="date"><span class="material-symbols-outlined">calendar_today</span> 10 Okt 2024</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Terbaru -->
+    <section class="section" style="padding-top:16px">
+      <div class="container">
+        <div class="section-head navy"><h2>Terbaru</h2></div>
+        <div class="grid gap-lg" style="grid-template-columns:1fr" data-cms-berita-terbaru>
+          <article class="news-list-item" data-kategori="kesiswaan">
+            <div class="thumb" style="background-image:url('assets/img/berita-pagelaran-seni.jpg')"></div>
+            <div class="meta">
+              <div class="row"><span class="badge badge-kesiswaan">Kesiswaan</span><span class="date-sm">8 Okt 2024</span></div>
+              <h3><a href="artikel.html?id=pagelaran-seni-2024">Persiapan Pagelaran Seni Budaya Tahunan 2024</a></h3>
+            </div>
+          </article>
+          <article class="news-list-item" data-kategori="pengumuman">
+            <div class="thumb icon-thumb"><span class="material-symbols-outlined">campaign</span></div>
+            <div class="meta">
+              <div class="row"><span class="badge badge-pengumuman">Pengumuman</span><span class="date-sm">5 Okt 2024</span></div>
+              <h3><a href="artikel.html?id=uts-ganjil-2024">Jadwal Ujian Tengah Semester Ganjil 2024/2025</a></h3>
+            </div>
+          </article>
+          <article class="news-list-item" data-kategori="alumni">
+            <div class="thumb" style="background-image:url('assets/img/berita-alumni-berbagi.jpg')"></div>
+            <div class="meta">
+              <div class="row"><span class="badge badge-alumni">Alumni</span><span class="date-sm">2 Okt 2024</span></div>
+              <h3><a href="artikel.html?id=alumni-berbagi">Alumni Berbagi: Tips Tembus Universitas Top Dunia</a></h3>
+            </div>
+          </article>
+          <article class="news-list-item" data-kategori="prestasi">
+            <div class="thumb" style="background-image:url('assets/img/galeri-juara-osn.jpg')"></div>
+            <div class="meta">
+              <div class="row"><span class="badge badge-prestasi">Prestasi</span><span class="date-sm">28 Sep 2024</span></div>
+              <h3><a href="artikel.html?id=osn-fisika-juara1">Siswa SMA Nusantara Juara 1 Olimpiade Sains Nasional Bidang Fisika</a></h3>
+            </div>
+          </article>
+          <article class="news-list-item" data-kategori="akademik">
+            <div class="thumb icon-thumb"><span class="material-symbols-outlined">menu_book</span></div>
+            <div class="meta">
+              <div class="row"><span class="badge badge-akademik">Akademik</span><span class="date-sm">20 Sep 2024</span></div>
+              <h3><a href="artikel.html?id=pertukaran-pelajar">Pendaftaran Program Pertukaran Pelajar Asia Tenggara Dibuka</a></h3>
+            </div>
+          </article>
+          <article class="news-list-item" data-kategori="pengumuman">
+            <div class="thumb icon-thumb"><span class="material-symbols-outlined">event_note</span></div>
+            <div class="meta">
+              <div class="row"><span class="badge badge-pengumuman">Pengumuman</span><span class="date-sm">15 Sep 2024</span></div>
+              <h3>Kalender Akademik Semester Ganjil 2024/2025</h3>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a class="brand" href="index.html">
+            <span class="logo-badge">SN</span>
+            <span class="brand-text"><span class="b1">SMA NUSANTARA</span><span class="b2">Terakreditasi A</span></span>
+          </a>
+          <p>Lembaga pendidikan menengah atas unggulan yang berkomitmen mencetak generasi berkarakter, inovatif, dan berwawasan global sejak 1985.</p>
+        </div>
+        <div>
+          <h4>Navigasi</h4>
+          <ul>
+            <li><a href="profil.html">Profil Sekolah</a></li>
+            <li><a href="akademik.html">Akademik</a></li>
+            <li><a href="kesiswaan.html">Kesiswaan</a></li>
+            <li><a href="berita.html">Berita &amp; Pengumuman</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Layanan</h4>
+          <ul>
+            <li><a href="ppdb.html">PPDB Online</a></li>
+            <li><a href="kontak.html">Portal Guru</a></li>
+            <li><a href="kesiswaan.html">Alumni</a></li>
+            <li><a href="kontak.html">Kontak Kami</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Hubungi Kami</h4>
+          <div class="contact-line"><span class="material-symbols-outlined">location_on</span> Jl. Pendidikan No. 1, Jakarta Pusat, DKI Jakarta 10110</div>
+          <div class="contact-line"><span class="material-symbols-outlined">call</span> (021) 555-1234</div>
+          <div class="contact-line"><span class="material-symbols-outlined">mail</span> info@smanusantara.sch.id</div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; <span data-year>2024</span> SMA Nusantara. Terakreditasi A.</span>
+        <span>Prestasi &middot; Akhlak &middot; Masa Depan</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/site.js"></script>
+  <script src="assets/js/cms.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+{
+  "identitas": {
+    "namaSekolah": "SMA NUSANTARA",
+    "inisial": "SN",
+    "tagline": "Prestasi · Akhlak · Masa Depan",
+    "akreditasi": "Terakreditasi A",
+    "telepon": "(021) 555-1234",
+    "email": "info@smanusantara.sch.id",
+    "alamat": "Jl. Pendidikan No. 1, Jakarta Pusat, DKI Jakarta 10110",
+    "tahunBerdiri": 1985,
+    "ppdbLabel": "PPDB 2024"
+  },
+  "artikel": null,
+  "galeri": null,
+  "guru": null,
+  "statistik": null,
+  "sambutan": {
+    "foto": "assets/img/kepsek-sambutan.jpg",
+    "nama": "Dr. Budi Santoso, M.Pd.",
+    "jabatan": "Kepala SMA Nusantara",
+    "kutipan": "Pendidikan bukan sekadar transfer ilmu, melainkan proses penempaan karakter. Di SMA Nusantara, kami berkomitmen mencetak generasi yang cerdas secara intelektual dan luhur secara moral.",
+    "paragraf1": "Setiap siswa adalah individu unik dengan potensi luar biasa. Melalui Kurikulum Merdeka, pembinaan karakter Profil Pelajar Pancasila, dan ekosistem belajar yang modern, kami mendampingi mereka menemukan jalannya menuju masa depan."
+  },
+  "ppdb": null,
+  "fasilitas": null,
+  "pendaftar": [
+    {
+      "nama": "Ahmad Uji",
+      "nisn": "0098765432",
+      "asalSekolah": "SDN 1 Palangka",
+      "jalur": "zonasi",
+      "email": "ortu@mail.com",
+      "whatsapp": "081298765432",
+      "id": "PDB-1786438685015",
+      "status": "baru",
+      "waktu": "2026-08-11T08:58:05.015Z"
+    },
+    {
+      "nama": "Ahmad Uji",
+      "nisn": "0098765432",
+      "asalSekolah": "SDN 1 Palangka",
+      "jalur": "zonasi",
+      "email": "ortu@mail.com",
+      "whatsapp": "081298765432",
+      "id": "PDB-1786438597793",
+      "status": "baru",
+      "waktu": "2026-08-11T08:56:37.793Z"
+    }
+  ],
+  "pesan": [
+    {
+      "nama": "Pengunjung Uji",
+      "email": "uji@mail.com",
+      "departemen": "umum",
+      "isi": "Pesan uji backend.",
+      "id": "MSG-1786438687717",
+      "waktu": "2026-08-11T08:58:07.717Z",
+      "dibaca": true
+    },
+    {
+      "nama": "Pengunjung Uji",
+      "email": "uji@mail.com",
+      "departemen": "umum",
+      "isi": "Pesan uji backend.",
+      "id": "MSG-1786438600580",
+      "waktu": "2026-08-11T08:56:40.580Z",
+      "dibaca": true
+    }
+  ],
+  "tema": {
+    "aktif": "luqman",
+    "kustom": null,
+    "heroGambar": "assets/img/hero-1786445143827-hero-kesiswaan.jpg",
+    "footerSize": "compact"
+  },
+  "admin": {
+    "email": "admin@smanusantara.sch.id",
+    "password": "admin123"
+  },
+  "tenants": []
+}

@@ -1,0 +1,177 @@
+/* ============================================================
+   Panel Admin SMA Nusantara — layout & komponen khusus admin
+   ============================================================ */
+:root {
+  --admin-sidebar-w: 250px;
+  --admin-bg: #f1f3f5;
+  --admin-panel: #ffffff;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body.admin {
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--text-main);
+  background: var(--admin-bg);
+  min-height: 100vh;
+}
+
+/* ---------- Login ---------- */
+.admin-login-wrap {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(140deg, var(--heritage-navy), var(--primary-container));
+  padding: 24px;
+}
+.admin-login-card {
+  width: 100%; max-width: 400px; background: var(--surface-white);
+  border-radius: var(--radius-xl); padding: 36px 32px; box-shadow: 0 16px 48px rgba(0,0,0,0.25);
+}
+.admin-login-card .brand { justify-content: center; margin-bottom: 20px; }
+.admin-login-card h1 { font-size: 22px; text-align: center; margin-bottom: 6px; }
+.admin-login-card .sub { text-align: center; color: var(--on-surface-variant); font-size: 14px; margin-bottom: 24px; }
+.admin-login-card .alert {
+  display: none; background: var(--error-container); color: var(--on-error-container);
+  font-size: 13px; padding: 10px 14px; border-radius: var(--radius-lg); margin-bottom: 16px;
+}
+.admin-login-card .alert.show { display: block; }
+.admin-login-card .hint {
+  margin-top: 16px; font-size: 12px; color: var(--outline); text-align: center;
+  background: var(--surface-container-low); padding: 8px 12px; border-radius: var(--radius-lg);
+}
+
+/* ---------- Layout ---------- */
+.admin-shell { display: flex; min-height: 100vh; }
+.admin-sidebar {
+  width: var(--admin-sidebar-w); flex: none; background: var(--heritage-navy);
+  color: rgba(255,255,255,0.85); display: flex; flex-direction: column;
+  position: fixed; inset: 0 auto 0 0; z-index: 50;
+}
+.admin-sidebar .brand { padding: 20px 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.admin-sidebar .brand .logo-badge { background: var(--academic-gold); color: var(--on-secondary-fixed); }
+.admin-sidebar .brand .brand-text .b1 { color: #fff; }
+.admin-sidebar .brand .brand-text .b2 { color: var(--academic-gold); }
+.admin-nav { padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.admin-nav a {
+  display: flex; align-items: center; gap: 12px; padding: 11px 14px;
+  border-radius: var(--radius-lg); color: rgba(255,255,255,0.75); font-weight: 500;
+  text-decoration: none; transition: background 0.15s ease, color 0.15s ease;
+}
+.admin-nav a:hover { background: rgba(255,255,255,0.08); color: #fff; text-decoration: none; }
+.admin-nav a.active { background: rgba(248,181,0,0.15); color: var(--academic-gold); }
+.admin-nav a .material-symbols-outlined { font-size: 22px; }
+.admin-sidebar .sidebar-foot { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 12px; color: rgba(255,255,255,0.5); }
+.admin-sidebar .sidebar-foot a { color: var(--academic-gold); }
+
+.admin-main { flex: 1; margin-left: var(--admin-sidebar-w); display: flex; flex-direction: column; min-width: 0; }
+.admin-topbar {
+  height: 64px; background: var(--surface-white); border-bottom: 1px solid var(--surface-container);
+  display: flex; align-items: center; justify-content: space-between; padding: 0 28px;
+  position: sticky; top: 0; z-index: 40;
+}
+.admin-topbar .page-title { font-size: 18px; font-weight: 600; color: var(--heritage-navy); }
+.admin-topbar .user-chip { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--on-surface-variant); }
+.admin-topbar .user-chip .avatar {
+  width: 34px; height: 34px; border-radius: 99px; background: var(--heritage-navy);
+  color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;
+}
+.admin-content { padding: 28px; flex: 1; }
+.admin-content > * + * { margin-top: 20px; }
+
+.admin-mobile-top { display: none; }
+@media (max-width: 900px) {
+  .admin-sidebar {
+    transform: translateX(-100%); transition: transform 0.2s ease;
+    box-shadow: 0 0 40px rgba(0,0,0,0.3);
+  }
+  .admin-sidebar.open { transform: translateX(0); }
+  .admin-main { margin-left: 0; }
+  .admin-mobile-top {
+    display: flex; align-items: center; gap: 12px; height: 56px; padding: 0 16px;
+    background: var(--heritage-navy); color: #fff; position: sticky; top: 0; z-index: 60;
+  }
+  .admin-mobile-top button { background: none; border: 0; color: #fff; cursor: pointer; flex: none; }
+  .admin-mobile-top strong { flex: 1; min-width: 0; overflow: visible; white-space: normal; font-size: 16px; font-weight: 600; }
+  /* Di mobile, topbar putih disembunyikan supaya tidak menumpuk/tertutup */
+  .admin-topbar { display: none; }
+  .admin-content { padding: 16px; padding-top: 20px; }
+}
+
+/* ---------- Komponen admin ---------- */
+.stat-grid { display: grid; gap: 16px; grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 1000px) { .stat-grid { grid-template-columns: repeat(4, 1fr); } }
+.stat-card {
+  background: var(--admin-panel); border: var(--border-card); border-radius: var(--radius-xl);
+  padding: 20px; display: flex; align-items: center; gap: 16px;
+}
+.stat-card .icon {
+  width: 48px; height: 48px; border-radius: var(--radius-lg); flex: none;
+  display: flex; align-items: center; justify-content: center; font-size: 26px;
+}
+.stat-card .num { font-size: 24px; font-weight: 700; color: var(--heritage-navy); line-height: 1.1; }
+.stat-card .lbl { font-size: 13px; color: var(--on-surface-variant); }
+
+.panel {
+  background: var(--admin-panel); border: var(--border-card); border-radius: var(--radius-xl);
+  padding: 24px;
+}
+.panel h2 { font-family: var(--font-body); font-size: 16px; font-weight: 600; color: var(--heritage-navy); margin-bottom: 16px; }
+.panel .panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 12px; flex-wrap: wrap; }
+.panel .panel-head h2 { margin-bottom: 0; }
+
+.btn-sm { padding: 8px 14px; font-size: 13px; }
+.btn-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: var(--radius); border: 1px solid var(--outline-variant);
+  background: var(--surface-white); color: var(--on-surface-variant); cursor: pointer;
+  transition: background 0.15s ease;
+}
+.btn-icon:hover { background: var(--surface-container-low); }
+.btn-icon.danger:hover { background: var(--error-container); color: var(--error); border-color: var(--error); }
+
+.table-wrap { overflow-x: auto; }
+table.admin-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.admin-table th {
+  text-align: left; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--outline); padding: 10px 12px; border-bottom: 1px solid var(--surface-container);
+  white-space: nowrap;
+}
+.admin-table td { padding: 14px 12px; border-bottom: 1px solid var(--surface-container); vertical-align: top; }
+.admin-table tr:last-child td { border-bottom: 0; }
+.admin-table tr:hover td { background: var(--surface-container-low); }
+.admin-table .judul { font-weight: 600; color: var(--on-surface); }
+.admin-table .meta { font-size: 12px; color: var(--outline); margin-top: 2px; }
+.admin-table .actions { display: flex; gap: 6px; }
+
+.badge-status { font-size: 11px; font-weight: 700; letter-spacing: 0.04em; padding: 4px 10px; border-radius: 99px; }
+.badge-status.baru { background: var(--primary-fixed); color: var(--primary); }
+.badge-status.diverifikasi { background: var(--secondary-fixed); color: var(--secondary); }
+.badge-status.diterima { background: #d3f9d8; color: #2b8a3e; }
+.badge-status.ditolak { background: var(--error-container); color: var(--error); }
+
+/* Form di admin */
+.form-panel { max-width: 760px; }
+.form-row { display: grid; gap: 16px; margin-bottom: 16px; }
+@media (min-width: 640px) { .form-row.two { grid-template-columns: 1fr 1fr; } }
+.form-actions { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+.link-back { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; margin-bottom: 16px; }
+
+.empty-state {
+  text-align: center; padding: 48px 24px; color: var(--on-surface-variant);
+}
+.empty-state .material-symbols-outlined { font-size: 48px; color: var(--outline-variant); margin-bottom: 8px; }
+
+/* Toast */
+.admin-toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 200;
+  background: var(--heritage-navy); color: #fff; padding: 12px 20px; border-radius: var(--radius-lg);
+  font-size: 14px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  opacity: 0; transform: translateY(8px); transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+.admin-toast.show { opacity: 1; transform: translateY(0); }
+
+/* Preview identitas di pengaturan */
+.identitas-preview {
+  background: var(--surface-container-low); border-radius: var(--radius-lg);
+  padding: 16px; font-size: 13px; color: var(--on-surface-variant); margin-top: 16px;
+}

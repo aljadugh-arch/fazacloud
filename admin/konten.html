@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Konten Halaman — Panel Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <script src="../assets/js/theme.js"></script>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/themes.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
+  <style>
+    .tab-bar { display: flex; gap: 4px; border-bottom: 1px solid var(--surface-container); margin-bottom: 24px; flex-wrap: wrap; }
+    .tab-bar button {
+      background: none; border: 0; padding: 12px 18px; font-family: var(--font-body);
+      font-size: 14px; font-weight: 500; color: var(--on-surface-variant); cursor: pointer;
+      border-bottom: 3px solid transparent; margin-bottom: -1px;
+    }
+    .tab-bar button.active { color: var(--heritage-navy); font-weight: 600; border-bottom-color: var(--academic-gold); }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+    .repeat-item { border: var(--border-card); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 12px; background: var(--surface-container-low); }
+    .repeat-item .repeat-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .repeat-item .repeat-head strong { font-size: 14px; color: var(--heritage-navy); }
+    .repeat-item .field { margin-bottom: 12px; }
+    .repeat-item .field:last-child { margin-bottom: 0; }
+  </style>
+</head>
+<body class="admin">
+
+  <div id="adminContentSource" style="display:none">
+    <div class="tab-bar">
+      <button class="active" data-tab="statistik">Statistik Beranda</button>
+      <button data-tab="sambutan">Sambutan Kepala Sekolah</button>
+      <button data-tab="fasilitas">Fasilitas</button>
+      <button data-tab="ppdb">Konten PPDB</button>
+    </div>
+
+    <!-- ========== STATISTIK ========== -->
+    <div class="tab-pane active" id="tab-statistik">
+      <div class="panel">
+        <div class="panel-head"><h2>Angka Statistik di Beranda</h2></div>
+        <form id="formStatistik" class="form-grid">
+          <div id="statistikItems"></div>
+          <div class="form-actions">
+            <button class="btn btn-navy" type="submit"><span class="material-symbols-outlined">save</span> Simpan Statistik</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ========== SAMBUTAN ========== -->
+    <div class="tab-pane" id="tab-sambutan">
+      <div class="panel form-panel">
+        <h2>Sambutan Kepala Sekolah (Beranda)</h2>
+        <form id="formSambutan" class="form-grid">
+          <div class="form-row two">
+            <div class="field"><label for="smbNama">Nama Kepala Sekolah</label><input id="smbNama" type="text" required></div>
+            <div class="field"><label for="smbJabatan">Jabatan</label><input id="smbJabatan" type="text" required></div>
+          </div>
+          <div class="field"><label>Foto Kepala Sekolah</label>
+            <div id="uploaderSambutan"></div>
+            <input type="hidden" id="smbFoto">
+            <small class="muted" style="display:block;margin-top:6px">Rekomendasi: <strong>400 × 400 px</strong> (kotak), maks 3 MB.</small>
+          </div>
+          <div class="field"><label for="smbKutipan">Kutipan Utama (tampil miring)</label><textarea id="smbKutipan" rows="3" required></textarea></div>
+          <div class="field"><label for="smbParagraf">Paragraf Pendamping</label><textarea id="smbParagraf" rows="4"></textarea></div>
+          <div class="form-actions">
+            <button class="btn btn-navy" type="submit"><span class="material-symbols-outlined">save</span> Simpan Sambutan</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ========== FASILITAS ========== -->
+    <div class="tab-pane" id="tab-fasilitas">
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Fasilitas Kampus (Halaman Profil)</h2>
+          <button class="btn btn-sm btn-navy" id="btnTambahFasilitas"><span class="material-symbols-outlined">add</span> Tambah</button>
+        </div>
+        <div id="fasilitasItems"></div>
+        <div class="form-actions" style="margin-top:16px">
+          <button class="btn btn-navy" id="btnSimpanFasilitas"><span class="material-symbols-outlined">save</span> Simpan Fasilitas</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== PPDB ========== -->
+    <div class="tab-pane" id="tab-ppdb">
+      <div class="panel form-panel" style="margin-bottom:20px">
+        <h2>Judul &amp; Sambutan PPDB</h2>
+        <form id="formPpdbInfo" class="form-grid">
+          <div class="field"><label for="ppdbJudul">Judul Utama</label><input id="ppdbJudul" type="text" required></div>
+          <div class="field"><label for="ppdbSubjudul">Subjudul / Deskripsi</label><textarea id="ppdbSubjudul" rows="2" required></textarea></div>
+          <div class="form-actions">
+            <button class="btn btn-navy" type="submit"><span class="material-symbols-outlined">save</span> Simpan Info PPDB</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="panel" style="margin-bottom:20px">
+        <div class="panel-head">
+          <h2>Jalur Pendaftaran</h2>
+          <button class="btn btn-sm btn-navy" id="btnTambahJalur"><span class="material-symbols-outlined">add</span> Tambah Jalur</button>
+        </div>
+        <div id="jalurItems"></div>
+        <div class="form-actions" style="margin-top:16px">
+          <button class="btn btn-navy" id="btnSimpanJalur"><span class="material-symbols-outlined">save</span> Simpan Jalur</button>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-bottom:20px">
+        <div class="panel-head">
+          <h2>Alur Pendaftaran</h2>
+          <button class="btn btn-sm btn-navy" id="btnTambahAlur"><span class="material-symbols-outlined">add</span> Tambah Langkah</button>
+        </div>
+        <div id="alurItems"></div>
+        <div class="form-actions" style="margin-top:16px">
+          <button class="btn btn-navy" id="btnSimpanAlur"><span class="material-symbols-outlined">save</span> Simpan Alur</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Jadwal Penting</h2>
+          <button class="btn btn-sm btn-navy" id="btnTambahJadwal"><span class="material-symbols-outlined">add</span> Tambah Jadwal</button>
+        </div>
+        <div id="jadwalItems"></div>
+        <div class="form-actions" style="margin-top:16px">
+          <button class="btn btn-navy" id="btnSimpanJadwal"><span class="material-symbols-outlined">save</span> Simpan Jadwal</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/site.js"></script>
+  <script src="../assets/js/artikel-data.js"></script>
+  <script src="../assets/js/admin-data.js"></script>
+  <script src="../assets/js/admin-common.js"></script>
+  <script>
+    AdminShell.build("Konten Halaman");
+    AdminShell.imageUploader("uploaderSambutan", "smbFoto", 120);
+
+    document.querySelector(".tab-bar").addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-tab]");
+      if (!btn) return;
+      document.querySelectorAll(".tab-bar button").forEach(function (b) { b.classList.remove("active"); });
+      document.querySelectorAll(".tab-pane").forEach(function (p) { p.classList.remove("active"); });
+      btn.classList.add("active");
+      document.getElementById("tab-" + btn.getAttribute("data-tab")).classList.add("active");
+    });
+
+    function esc(v) { return AdminShell.escHtml(v); }
+
+    // ---------- Statistik ----------
+    function renderStatistik() {
+      DB.statistik.get().then(function (arr) {
+        document.getElementById("statistikItems").innerHTML = arr.map(function (st, i) {
+          return '<div class="repeat-item"><div class="repeat-head"><strong>Statistik #' + (i + 1) + "</strong></div>" +
+            '<div class="form-row two">' +
+            '<div class="field"><label>Angka (contoh: 1.250+)</label><input type="text" data-stat-angka="' + st.id + '" value="' + esc(st.angka) + '"></div>' +
+            '<div class="field"><label>Label</label><input type="text" data-stat-label="' + st.id + '" value="' + esc(st.label) + '"></div>' +
+            "</div></div>";
+        }).join("");
+      });
+    }
+    document.getElementById("formStatistik").addEventListener("submit", function (e) {
+      e.preventDefault();
+      DB.statistik.get().then(function (arr) {
+        var baru = arr.map(function (st) {
+          return {
+            id: st.id,
+            angka: document.querySelector('[data-stat-angka="' + st.id + '"]').value.trim(),
+            label: document.querySelector('[data-stat-label="' + st.id + '"]').value.trim()
+          };
+        });
+        return DB.statistik.simpanSemua(baru);
+      }).then(function () { AdminShell.toast("Statistik disimpan."); });
+    });
+    renderStatistik();
+
+    // ---------- Sambutan ----------
+    DB.getSambutan().then(function (smb) {
+      document.getElementById("smbNama").value = smb.nama || "";
+      document.getElementById("smbJabatan").value = smb.jabatan || "";
+      document.getElementById("uploaderSambutan").setValue(smb.foto || "");
+      document.getElementById("smbKutipan").value = smb.kutipan || "";
+      document.getElementById("smbParagraf").value = smb.paragraf1 || "";
+    });
+    document.getElementById("formSambutan").addEventListener("submit", function (e) {
+      e.preventDefault();
+      DB.simpanSambutan({
+        nama: document.getElementById("smbNama").value.trim(),
+        jabatan: document.getElementById("smbJabatan").value.trim(),
+        foto: document.getElementById("uploaderSambutan").getValue(),
+        kutipan: document.getElementById("smbKutipan").value.trim(),
+        paragraf1: document.getElementById("smbParagraf").value.trim()
+      }).then(function () { AdminShell.toast("Sambutan disimpan."); });
+    });
+
+    // ---------- Fasilitas ----------
+    function renderFasilitas() {
+      DB.fasilitas.get().then(function (arr) {
+        document.getElementById("fasilitasItems").innerHTML = arr.map(function (f, i) {
+          return '<div class="repeat-item" data-fid="' + f.id + '"><div class="repeat-head"><strong>Fasilitas #' + (i + 1) + "</strong>" +
+            '<button class="btn-icon danger" type="button" data-hapus-fasilitas="' + f.id + '"><span class="material-symbols-outlined">delete</span></button></div>' +
+            '<div class="form-row two">' +
+            '<div class="field"><label>Nama</label><input type="text" data-f-nama value="' + esc(f.nama) + '"></div>' +
+            '<div class="field"><label>Ikon (Material Symbols)</label><input type="text" data-f-ikon value="' + esc(f.ikon) + '"></div>' +
+            "</div>" +
+            '<div class="field"><label>Deskripsi</label><input type="text" data-f-deskripsi value="' + esc(f.deskripsi) + '"></div></div>';
+        }).join("");
+      });
+    }
+    document.getElementById("btnTambahFasilitas").addEventListener("click", function () {
+      DB.fasilitas.get().then(function (arr) {
+        arr.push({ id: "fs" + Date.now(), nama: "Fasilitas Baru", ikon: "home", deskripsi: "" });
+        return DB.fasilitas.simpanSemua(arr);
+      }).then(renderFasilitas);
+    });
+    document.getElementById("fasilitasItems").addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-hapus-fasilitas]");
+      if (btn && confirm("Hapus fasilitas ini?")) {
+        DB.fasilitas.hapus(btn.getAttribute("data-hapus-fasilitas")).then(function () {
+          renderFasilitas();
+          AdminShell.toast("Fasilitas dihapus.");
+        });
+      }
+    });
+    document.getElementById("btnSimpanFasilitas").addEventListener("click", function () {
+      var arr = [];
+      document.querySelectorAll("#fasilitasItems .repeat-item").forEach(function (item) {
+        arr.push({
+          id: item.getAttribute("data-fid"),
+          nama: item.querySelector("[data-f-nama]").value.trim(),
+          ikon: item.querySelector("[data-f-ikon]").value.trim(),
+          deskripsi: item.querySelector("[data-f-deskripsi]").value.trim()
+        });
+      });
+      DB.fasilitas.simpanSemua(arr).then(function () { AdminShell.toast("Fasilitas disimpan."); });
+    });
+    renderFasilitas();
+
+    // ---------- PPDB ----------
+    function renderPpdbInfo() {
+      DB.getPpdb().then(function (ppdb) {
+        document.getElementById("ppdbJudul").value = ppdb.judul || "";
+        document.getElementById("ppdbSubjudul").value = ppdb.subjudul || "";
+      });
+    }
+    document.getElementById("formPpdbInfo").addEventListener("submit", function (e) {
+      e.preventDefault();
+      DB.getPpdb().then(function (d) {
+        d.judul = document.getElementById("ppdbJudul").value.trim();
+        d.subjudul = document.getElementById("ppdbSubjudul").value.trim();
+        return DB.simpanPpdb(d);
+      }).then(function () { AdminShell.toast("Info PPDB disimpan."); });
+    });
+    renderPpdbInfo();
+
+    function renderJalur() {
+      DB.getPpdb().then(function (ppdb) {
+        var arr = ppdb.jalur || [];
+        document.getElementById("jalurItems").innerHTML = arr.map(function (j, i) {
+          return '<div class="repeat-item" data-jid="' + j.id + '"><div class="repeat-head"><strong>Jalur #' + (i + 1) + "</strong>" +
+            '<button class="btn-icon danger" type="button" data-hapus-jalur="' + j.id + '"><span class="material-symbols-outlined">delete</span></button></div>' +
+            '<div class="form-row two">' +
+            '<div class="field"><label>Nama Jalur</label><input type="text" data-j-nama value="' + esc(j.nama) + '"></div>' +
+            '<div class="field"><label>Ikon</label><input type="text" data-j-ikon value="' + esc(j.ikon) + '"></div>' +
+            "</div>" +
+            '<div class="field"><label>Deskripsi</label><textarea data-j-deskripsi rows="2">' + esc(j.deskripsi) + "</textarea></div></div>";
+        }).join("");
+      });
+    }
+    document.getElementById("btnTambahJalur").addEventListener("click", function () {
+      DB.getPpdb().then(function (d) {
+        d.jalur = d.jalur || [];
+        d.jalur.push({ id: "jl" + Date.now(), nama: "Jalur Baru", ikon: "emoji_events", warna: "primary", deskripsi: "" });
+        return DB.simpanPpdb(d);
+      }).then(renderJalur);
+    });
+    document.getElementById("jalurItems").addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-hapus-jalur]");
+      if (btn && confirm("Hapus jalur ini?")) {
+        DB.getPpdb().then(function (d) {
+          d.jalur = d.jalur.filter(function (j) { return j.id !== btn.getAttribute("data-hapus-jalur"); });
+          return DB.simpanPpdb(d);
+        }).then(function () { renderJalur(); AdminShell.toast("Jalur dihapus."); });
+      }
+    });
+    document.getElementById("btnSimpanJalur").addEventListener("click", function () {
+      DB.getPpdb().then(function (d) {
+        var arr = [];
+        document.querySelectorAll("#jalurItems .repeat-item").forEach(function (item) {
+          arr.push({
+            id: item.getAttribute("data-jid"),
+            nama: item.querySelector("[data-j-nama]").value.trim(),
+            ikon: item.querySelector("[data-j-ikon]").value.trim(),
+            warna: "primary",
+            deskripsi: item.querySelector("[data-j-deskripsi]").value.trim()
+          });
+        });
+        d.jalur = arr;
+        return DB.simpanPpdb(d);
+      }).then(function () { AdminShell.toast("Jalur pendaftaran disimpan."); });
+    });
+    renderJalur();
+
+    function renderAlur() {
+      DB.getPpdb().then(function (ppdb) {
+        var arr = ppdb.alur || [];
+        document.getElementById("alurItems").innerHTML = arr.map(function (a, i) {
+          return '<div class="repeat-item" data-aid="' + a.id + '"><div class="repeat-head"><strong>Langkah #' + (i + 1) + "</strong>" +
+            '<button class="btn-icon danger" type="button" data-hapus-alur="' + a.id + '"><span class="material-symbols-outlined">delete</span></button></div>' +
+            '<div class="field"><label>Judul Langkah</label><input type="text" data-a-judul value="' + esc(a.judul) + '"></div>' +
+            '<div class="field"><label>Deskripsi</label><textarea data-a-deskripsi rows="2">' + esc(a.deskripsi) + "</textarea></div></div>";
+        }).join("");
+      });
+    }
+    document.getElementById("btnTambahAlur").addEventListener("click", function () {
+      DB.getPpdb().then(function (d) {
+        d.alur = d.alur || [];
+        d.alur.push({ id: "al" + Date.now(), judul: "Langkah Baru", deskripsi: "" });
+        return DB.simpanPpdb(d);
+      }).then(renderAlur);
+    });
+    document.getElementById("alurItems").addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-hapus-alur]");
+      if (btn && confirm("Hapus langkah ini?")) {
+        DB.getPpdb().then(function (d) {
+          d.alur = d.alur.filter(function (a) { return a.id !== btn.getAttribute("data-hapus-alur"); });
+          return DB.simpanPpdb(d);
+        }).then(function () { renderAlur(); AdminShell.toast("Langkah dihapus."); });
+      }
+    });
+    document.getElementById("btnSimpanAlur").addEventListener("click", function () {
+      DB.getPpdb().then(function (d) {
+        var arr = [];
+        document.querySelectorAll("#alurItems .repeat-item").forEach(function (item) {
+          arr.push({
+            id: item.getAttribute("data-aid"),
+            judul: item.querySelector("[data-a-judul]").value.trim(),
+            deskripsi: item.querySelector("[data-a-deskripsi]").value.trim()
+          });
+        });
+        d.alur = arr;
+        return DB.simpanPpdb(d);
+      }).then(function () { AdminShell.toast("Alur pendaftaran disimpan."); });
+    });
+    renderAlur();
+
+    function renderJadwal() {
+      DB.getPpdb().then(function (ppdb) {
+        var arr = ppdb.jadwal || [];
+        document.getElementById("jadwalItems").innerHTML = arr.map(function (j, i) {
+          return '<div class="repeat-item" data-jdid="' + j.id + '"><div class="repeat-head"><strong>Jadwal #' + (i + 1) + "</strong>" +
+            '<button class="btn-icon danger" type="button" data-hapus-jadwal="' + j.id + '"><span class="material-symbols-outlined">delete</span></button></div>' +
+            '<div class="form-row two">' +
+            '<div class="field"><label>Tanggal</label><input type="text" data-jd-tanggal value="' + esc(j.tanggal) + '"></div>' +
+            '<div class="field"><label>Label Kegiatan</label><input type="text" data-jd-label value="' + esc(j.label) + '"></div>' +
+            "</div>" +
+            '<div class="form-row two">' +
+            '<div class="field"><label>Ikon</label><input type="text" data-jd-ikon value="' + esc(j.ikon) + '"></div>' +
+            '<div class="field" style="display:flex;align-items:flex-end;gap:8px;padding-bottom:4px">' +
+            '<input type="checkbox" data-jd-penting ' + (j.penting ? "checked" : "") + ' style="width:18px;height:18px">' +
+            "<label>Tandai sebagai tanggal penting (merah)</label></div>" +
+            "</div></div>";
+        }).join("");
+      });
+    }
+    document.getElementById("btnTambahJadwal").addEventListener("click", function () {
+      DB.getPpdb().then(function (d) {
+        d.jadwal = d.jadwal || [];
+        d.jadwal.push({ id: "jd" + Date.now(), tanggal: "", label: "Kegiatan Baru", ikon: "calendar_today", penting: false });
+        return DB.simpanPpdb(d);
+      }).then(renderJadwal);
+    });
+    document.getElementById("jadwalItems").addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-hapus-jadwal]");
+      if (btn && confirm("Hapus jadwal ini?")) {
+        DB.getPpdb().then(function (d) {
+          d.jadwal = d.jadwal.filter(function (j) { return j.id !== btn.getAttribute("data-hapus-jadwal"); });
+          return DB.simpanPpdb(d);
+        }).then(function () { renderJadwal(); AdminShell.toast("Jadwal dihapus."); });
+      }
+    });
+    document.getElementById("btnSimpanJadwal").addEventListener("click", function () {
+      DB.getPpdb().then(function (d) {
+        var arr = [];
+        document.querySelectorAll("#jadwalItems .repeat-item").forEach(function (item) {
+          arr.push({
+            id: item.getAttribute("data-jdid"),
+            tanggal: item.querySelector("[data-jd-tanggal]").value.trim(),
+            label: item.querySelector("[data-jd-label]").value.trim(),
+            ikon: item.querySelector("[data-jd-ikon]").value.trim(),
+            penting: item.querySelector("[data-jd-penting]").checked
+          });
+        });
+        d.jadwal = arr;
+        return DB.simpanPpdb(d);
+      }).then(function () { AdminShell.toast("Jadwal penting disimpan."); });
+    });
+    renderJadwal();
+  </script>
+</body>
+</html>

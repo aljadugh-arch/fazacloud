@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Artikel — Panel Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <script src="../assets/js/theme.js"></script>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/themes.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body class="admin">
+
+  <div id="adminContentSource" style="display:none">
+    <a class="link-back" href="berita.html"><span class="material-symbols-outlined">arrow_back</span> Kembali ke daftar</a>
+    <div class="panel form-panel">
+      <h2 id="formTitle">Tulis Artikel Baru</h2>
+      <form id="formArtikel" class="form-grid">
+        <input type="hidden" id="artId">
+        <div class="field">
+          <label for="artJudul">Judul Artikel <span class="req">*</span></label>
+          <input id="artJudul" type="text" required placeholder="Contoh: Tim Robotika Raih Juara 1 Nasional">
+        </div>
+        <div class="form-row two">
+          <div class="field">
+            <label for="artKategori">Kategori <span class="req">*</span></label>
+            <div class="select-wrap">
+              <select id="artKategori" required>
+                <option value="Prestasi">Prestasi</option>
+                <option value="Akademik">Akademik</option>
+                <option value="Kesiswaan">Kesiswaan</option>
+                <option value="Pengumuman">Pengumuman</option>
+                <option value="Alumni">Alumni</option>
+                <option value="Kegiatan">Kegiatan</option>
+              </select>
+              <span class="material-symbols-outlined">expand_more</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="artTanggal">Tanggal <span class="req">*</span></label>
+            <input id="artTanggal" type="text" required placeholder="Contoh: 12 Oktober 2024">
+          </div>
+        </div>
+        <div class="field">
+          <label>Gambar Utama Artikel</label>
+          <div id="uploaderArtikel"></div>
+          <input type="hidden" id="artGambar">
+          <small class="muted" style="display:block;margin-top:6px">Rekomendasi: <strong>1200 × 675 px</strong> (16:9), JPG/PNG/WebP, maks 3 MB. Kosongkan untuk artikel tanpa gambar.</small>
+        </div>
+        <div class="field">
+          <label for="artIsi">Isi Artikel <span class="req">*</span></label>
+          <textarea id="artIsi" rows="10" required placeholder="Tulis isi artikel di sini. Pisahkan paragraf dengan baris kosong."></textarea>
+        </div>
+        <div class="field" style="display:flex;align-items:center;gap:10px">
+          <input id="artTerbit" type="checkbox" checked style="width:18px;height:18px">
+          <label for="artTerbit" style="margin:0">Terbitkan (tampil di website)</label>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-navy" type="submit" id="btnSimpan"><span class="material-symbols-outlined">save</span> Simpan Artikel</button>
+          <a class="btn btn-ghost" href="berita.html">Batal</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../assets/js/site.js"></script>
+  <script src="../assets/js/artikel-data.js"></script>
+  <script src="../assets/js/admin-data.js"></script>
+  <script src="../assets/js/admin-common.js"></script>
+  <script>
+    AdminShell.build("Form Artikel");
+
+    AdminShell.imageUploader("uploaderArtikel", "artGambar", 90);
+
+    var id = new URLSearchParams(location.search).get("id");
+
+    if (id) {
+      DB.getArtikelById(id).then(function (art) {
+        if (!art) {
+          AdminShell.toast("Artikel tidak ditemukan.");
+          location.replace("berita.html");
+          return;
+        }
+        document.getElementById("formTitle").textContent = "Edit Artikel";
+        document.getElementById("artId").value = art.id;
+        document.getElementById("artJudul").value = art.judul;
+        document.getElementById("artKategori").value = art.kategori;
+        document.getElementById("artTanggal").value = art.tanggal;
+        document.getElementById("uploaderArtikel").setValue(art.gambar || "");
+        document.getElementById("artIsi").value = art.isi;
+        document.getElementById("artTerbit").checked = !!art.terbit;
+      });
+    }
+
+    document.getElementById("formArtikel").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var btn = document.getElementById("btnSimpan");
+      btn.disabled = true;
+      var judul = document.getElementById("artJudul").value.trim();
+      var idPromise = id ? Promise.resolve(id) : DB.buatIdArtikel(judul);
+      idPromise.then(function (finalId) {
+        var data = {
+          id: finalId,
+          judul: judul,
+          kategori: document.getElementById("artKategori").value,
+          tanggal: document.getElementById("artTanggal").value.trim(),
+          gambar: document.getElementById("uploaderArtikel").getValue(),
+          isi: document.getElementById("artIsi").value.trim(),
+          terbit: document.getElementById("artTerbit").checked
+        };
+        return DB.simpanArtikel(data);
+      }).then(function () {
+        AdminShell.toast(id ? "Artikel diperbarui." : "Artikel baru disimpan.");
+        setTimeout(function () { location.href = "berita.html"; }, 500);
+      }).catch(function () {
+        btn.disabled = false;
+        AdminShell.toast("Gagal menyimpan.");
+      });
+    });
+  </script>
+</body>
+</html>

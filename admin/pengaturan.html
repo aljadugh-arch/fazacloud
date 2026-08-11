@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pengaturan Situs — Panel Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <script src="../assets/js/theme.js"></script>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/themes.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body class="admin">
+
+  <div id="adminContentSource" style="display:none">
+    <div class="panel form-panel">
+      <h2>Identitas Sekolah</h2>
+      <p class="muted mb-24" style="font-size:14px">Perubahan di sini akan langsung mengganti nama, logo teks, dan kontak di SELURUH halaman website untuk semua pengunjung.</p>
+      <form id="formIdentitas" class="form-grid">
+        <div class="form-row two">
+          <div class="field">
+            <label for="setNama">Nama Sekolah <span class="req">*</span></label>
+            <input id="setNama" type="text" required placeholder="Contoh: MTs Plus Sunan Drajat 7 Palang">
+          </div>
+          <div class="field">
+            <label for="setInisial">Inisial (untuk badge logo, maks 4 huruf) <span class="req">*</span></label>
+            <input id="setInisial" type="text" maxlength="4" required placeholder="Contoh: SD7">
+          </div>
+        </div>
+        <div class="form-row two">
+          <div class="field">
+            <label for="setTagline">Tagline</label>
+            <input id="setTagline" type="text" placeholder="Prestasi · Akhlak · Masa Depan">
+          </div>
+          <div class="field">
+            <label for="setAkreditasi">Label Akreditasi</label>
+            <input id="setAkreditasi" type="text" placeholder="Terakreditasi A">
+          </div>
+        </div>
+        <div class="form-row two">
+          <div class="field">
+            <label for="setTelepon">Telepon</label>
+            <input id="setTelepon" type="text" placeholder="(021) 555-1234">
+          </div>
+          <div class="field">
+            <label for="setEmail">Email</label>
+            <input id="setEmail" type="email" placeholder="info@sekolah.sch.id">
+          </div>
+        </div>
+        <div class="field">
+          <label for="setAlamat">Alamat Lengkap</label>
+          <textarea id="setAlamat" rows="2" placeholder="Jl. Pendidikan No. 1, Jakarta Pusat, DKI Jakarta 10110"></textarea>
+        </div>
+        <div class="form-row two">
+          <div class="field">
+            <label for="setPpdb">Label Tombol PPDB</label>
+            <input id="setPpdb" type="text" placeholder="PPDB 2024">
+          </div>
+          <div class="field">
+            <label for="setTahun">Tahun Berdiri</label>
+            <input id="setTahun" type="number" min="1900" max="2100">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-navy" type="submit" id="btnSimpan"><span class="material-symbols-outlined">save</span> Simpan Pengaturan</button>
+          <button class="btn btn-ghost" type="button" id="btnReset"><span class="material-symbols-outlined">restart_alt</span> Reset Semua Konten</button>
+        </div>
+        <div class="identitas-preview">
+          Setelah disimpan, buka <a href="../index.html" target="_blank">halaman publik</a> dan muat ulang untuk melihat perubahan.
+        </div>
+      </form>
+    </div>
+
+    <div class="panel form-panel" style="margin-top:20px">
+      <h2>Keamanan — Ganti Kata Sandi Admin</h2>
+      <form id="formPassword" class="form-grid">
+        <div class="field">
+          <label for="pwLama">Kata Sandi Lama <span class="req">*</span></label>
+          <input id="pwLama" type="password" required autocomplete="current-password">
+        </div>
+        <div class="form-row two">
+          <div class="field">
+            <label for="pwBaru">Kata Sandi Baru (min. 6 karakter) <span class="req">*</span></label>
+            <input id="pwBaru" type="password" required minlength="6" autocomplete="new-password">
+          </div>
+          <div class="field">
+            <label for="pwKonfirmasi">Ulangi Kata Sandi Baru <span class="req">*</span></label>
+            <input id="pwKonfirmasi" type="password" required autocomplete="new-password">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-navy" type="submit" id="btnGantiPw"><span class="material-symbols-outlined">lock_reset</span> Ganti Kata Sandi</button>
+        </div>
+        <div class="identitas-preview" id="pwMsg" style="display:none"></div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../assets/js/site.js"></script>
+  <script src="../assets/js/artikel-data.js"></script>
+  <script src="../assets/js/admin-data.js"></script>
+  <script src="../assets/js/admin-common.js"></script>
+  <script>
+    AdminShell.build("Pengaturan Situs");
+
+    DB.getIdentitas().then(function (S) {
+      document.getElementById("setNama").value = S.namaSekolah || "";
+      document.getElementById("setInisial").value = S.inisial || "";
+      document.getElementById("setTagline").value = S.tagline || "";
+      document.getElementById("setAkreditasi").value = S.akreditasi || "";
+      document.getElementById("setTelepon").value = S.telepon || "";
+      document.getElementById("setEmail").value = S.email || "";
+      document.getElementById("setAlamat").value = S.alamat || "";
+      document.getElementById("setPpdb").value = S.ppdbLabel || "";
+      document.getElementById("setTahun").value = S.tahunBerdiri || "";
+    });
+
+    document.getElementById("formIdentitas").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var btn = document.getElementById("btnSimpan");
+      btn.disabled = true;
+      var data = {
+        namaSekolah: document.getElementById("setNama").value.trim(),
+        inisial: document.getElementById("setInisial").value.trim().toUpperCase(),
+        tagline: document.getElementById("setTagline").value.trim(),
+        akreditasi: document.getElementById("setAkreditasi").value.trim(),
+        telepon: document.getElementById("setTelepon").value.trim(),
+        email: document.getElementById("setEmail").value.trim(),
+        alamat: document.getElementById("setAlamat").value.trim(),
+        ppdbLabel: document.getElementById("setPpdb").value.trim(),
+        tahunBerdiri: parseInt(document.getElementById("setTahun").value, 10) || 1985
+      };
+      DB.simpanIdentitas(data).then(function () {
+        btn.disabled = false;
+        AdminShell.toast("Pengaturan disimpan. Muat ulang halaman publik untuk melihat perubahan.");
+      }).catch(function () {
+        btn.disabled = false;
+        AdminShell.toast("Gagal menyimpan.");
+      });
+    });
+
+    document.getElementById("btnReset").addEventListener("click", function () {
+      if (confirm("Reset SEMUA konten (artikel, galeri, guru, statistik, sambutan, PPDB, fasilitas, identitas) ke bawaan? Pesan masuk & pendaftar tetap disimpan.")) {
+        DB.resetAll().then(function () {
+          AdminShell.toast("Konten dikembalikan ke bawaan.");
+          setTimeout(function () { location.reload(); }, 600);
+        });
+      }
+    });
+
+    // ---- Ganti password ----
+    document.getElementById("formPassword").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var lama = document.getElementById("pwLama").value;
+      var baru = document.getElementById("pwBaru").value;
+      var konf = document.getElementById("pwKonfirmasi").value;
+      var msg = document.getElementById("pwMsg");
+      function showMsg(t, ok) {
+        msg.style.display = "";
+        msg.style.background = ok ? "#d3f9d8" : "var(--error-container)";
+        msg.style.color = ok ? "#2b8a3e" : "var(--on-error-container)";
+        msg.textContent = t;
+      }
+      if (baru !== konf) { showMsg("Konfirmasi kata sandi baru tidak sama."); return; }
+      var btn = document.getElementById("btnGantiPw");
+      btn.disabled = true;
+      fetch(((location.pathname.match(/^\/t\/([a-z0-9-]+)/)||[])[0]||"") + "/api/ganti-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sessionStorage.getItem("cms_token") },
+        body: JSON.stringify({ passwordLama: lama, passwordBaru: baru })
+      }).then(function (r) { return r.json(); }).then(function (j) {
+        btn.disabled = false;
+        if (j.ok) {
+          showMsg("Kata sandi berhasil diganti. Gunakan kata sandi baru saat login berikutnya.", true);
+          document.getElementById("formPassword").reset();
+        } else {
+          showMsg(j.error || "Gagal mengganti kata sandi.");
+        }
+      }).catch(function () {
+        btn.disabled = false;
+        showMsg("Server tidak merespons.");
+      });
+    });
+  </script>
+</body>
+</html>

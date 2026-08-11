@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tema &amp; Tampilan — Panel Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/themes.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
+  <style>
+    .tema-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); margin-bottom: 32px; }
+    .tema-card {
+      border: 2px solid var(--outline-variant); border-radius: var(--radius-xl);
+      padding: 16px; cursor: pointer; transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      background: var(--surface-white); position: relative;
+    }
+    .tema-card:hover { border-color: var(--primary); box-shadow: var(--shadow-card-hover); }
+    .tema-card.active { border-color: var(--heritage-navy); box-shadow: 0 0 0 3px rgba(35,61,98,0.15); }
+    .tema-card .swatch { display: flex; gap: 6px; margin-bottom: 12px; }
+    .tema-card .swatch span { width: 28px; height: 28px; border-radius: 6px; flex: none; }
+    .tema-card .nama { font-weight: 600; font-size: 15px; color: var(--heritage-navy); }
+    .tema-card .desc { font-size: 12px; color: var(--on-surface-variant); margin-top: 4px; line-height: 1.4; }
+    .tema-card .check {
+      position: absolute; top: 12px; right: 12px; width: 26px; height: 26px; border-radius: 99px;
+      background: var(--heritage-navy); color: #fff; display: none; align-items: center; justify-content: center;
+    }
+    .tema-card.active .check { display: flex; }
+    .kustom-panel { background: var(--surface-white); border: var(--border-card); border-radius: var(--radius-xl); padding: 24px; }
+    .kustom-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+    .color-field { display: flex; flex-direction: column; gap: 8px; padding: 14px; border: 1px solid var(--outline-variant); border-radius: var(--radius-lg); background: var(--surface-white); }
+    .color-field .cf-label { font-size: 13px; font-weight: 600; color: var(--on-surface); }
+    .color-field .cf-row { display: flex; align-items: center; gap: 10px; }
+    .color-field input[type="color"] { width: 44px; height: 36px; border: 1px solid var(--outline-variant); border-radius: var(--radius); cursor: pointer; padding: 2px; flex: none; }
+    .color-field input[type="text"] { flex: 1; min-width: 0; padding: 8px 10px; border: 1px solid var(--outline); border-radius: var(--radius); font-family: monospace; font-size: 13px; }
+    .font-select { width: 100%; padding: 10px 12px; border: 1px solid var(--outline); border-radius: var(--radius); font-size: 14px; }
+  </style>
+</head>
+<body class="admin">
+
+  <div id="adminContentSource" style="display:none">
+    <div class="panel">
+      <p class="muted mb-24" style="font-size:14px">Pilih salah satu tema di bawah, atau aktifkan kustomisasi untuk mengatur warna dan font sendiri. Perubahan langsung berlaku untuk semua pengunjung.</p>
+      <div class="tema-grid" id="temaGrid"></div>
+    </div>
+
+    <div class="kustom-panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+        <div>
+          <h2 style="margin-bottom:4px">Kustomisasi Tema</h2>
+          <p class="muted" style="font-size:13px">Aktifkan untuk menimpa warna dan font tema terpilih.</p>
+        </div>
+        <label style="display:flex;align-items:center;gap:8px;font-weight:500;cursor:pointer">
+          <input type="checkbox" id="chkKustom" style="width:18px;height:18px"> Aktifkan kustomisasi
+        </label>
+      </div>
+      <div id="kustomFields" style="display:none">
+        <div class="kustom-grid" id="kustomGrid"></div>
+        <div class="form-row two" style="margin-top:16px">
+          <div class="field">
+            <label>Font Judul</label>
+            <select class="font-select" id="fontHead">
+              <option value="'Source Serif 4', Georgia, serif">Source Serif 4 (serif, bawaan)</option>
+              <option value="'Philosopher', serif">Philosopher (elegan)</option>
+              <option value="'Archivo', sans-serif">Archivo (modern tegas)</option>
+              <option value="'Helvetica Neue', Helvetica, Arial, sans-serif">Helvetica / Arial (klasik)</option>
+              <option value="Georgia, serif">Georgia (serif umum)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Font Isi / Body</label>
+            <select class="font-select" id="fontBody">
+              <option value="'Inter', sans-serif">Inter (bawaan)</option>
+              <option value="'Archivo', sans-serif">Archivo</option>
+              <option value="'Helvetica Neue', Helvetica, Arial, sans-serif">Helvetica / Arial</option>
+              <option value="system-ui, sans-serif">System UI</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions" style="margin-top:20px">
+          <button class="btn btn-navy" id="btnSimpanKustom"><span class="material-symbols-outlined">save</span> Simpan Tema</button>
+          <button class="btn btn-ghost" id="btnResetKustom"><span class="material-symbols-outlined">restart_alt</span> Hapus Kustomisasi</button>
+        </div>
+      </div>
+    </div>
+  <div class="panel" style="margin-top:20px">
+    <div class="panel-head"><h2>Gambar Hero &amp; Ukuran Footer</h2></div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Gambar Background Hero (kosongkan untuk pakai bawaan)</label>
+        <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap">
+          <div style="flex:1;min-width:260px">
+            <input id="heroGambar" type="text" placeholder="assets/img/hero-beranda.jpg" style="margin-bottom:8px">
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <label class="btn btn-sm btn-ghost" style="cursor:pointer;margin:0">
+                <span class="material-symbols-outlined">upload</span> Pilih Gambar…
+                <input id="heroFile" type="file" accept="image/jpeg,image/png,image/webp" style="display:none">
+              </label>
+              <span id="heroUploadStatus" class="muted" style="font-size:13px"></span>
+            </div>
+          </div>
+          <div id="heroPreview" style="width:180px;height:90px;border-radius:8px;background:var(--surface-container);background-size:cover;background-position:center;border:1px solid var(--outline-variant)"></div>
+        </div>
+        <small class="muted" style="display:block;margin-top:8px;line-height:1.5">
+          <strong>Panduan ukuran hero:</strong> minimal <strong>1920 × 1080 px</strong> (rasio 16:9), format JPG/PNG/WebP, maks <strong>3 MB</strong>. Area tengah gambar akan terlihat di semua ukuran layar — hindari teks penting di tepi. Gambar ini dipakai di semua hero halaman (beranda & halaman dalam).
+        </small>
+      </div>
+      <div class="field">
+        <label>Ukuran Footer</label>
+        <div class="select-wrap">
+          <select id="footerSize">
+            <option value="compact">Ringkas</option>
+            <option value="normal" selected>Normal</option>
+            <option value="lebar">Lebar</option>
+          </select>
+          <span class="material-symbols-outlined">expand_more</span>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-navy" id="btnSimpanHero"><span class="material-symbols-outlined">save</span> Simpan Hero &amp; Footer</button>
+      </div>
+    </div>
+  </div>
+  </div>
+  </div>
+
+  
+
+  <script src="../assets/js/theme.js"></script>
+  <script src="../assets/js/site.js"></script>
+  <script src="../assets/js/artikel-data.js"></script>
+  <script src="../assets/js/admin-data.js"></script>
+  <script src="../assets/js/admin-common.js"></script>
+  <script>
+    AdminShell.build("Tema & Tampilan");
+
+    var temaAktif = "nusantara";
+    var kustomAktif = null;
+
+    var WARNA_FIELDS = [
+      { key: "--heritage-navy", label: "Navy / Warna Utama" },
+      { key: "--primary", label: "Primary (tombol, link)" },
+      { key: "--primary-container", label: "Primary Gelap" },
+      { key: "--academic-gold", label: "Aksen (emas/emerald/oranye)" },
+      { key: "--secondary", label: "Aksen Sekunder" },
+      { key: "--surface", label: "Background" },
+      { key: "--surface-container-low", label: "Background Kartu" }
+    ];
+
+    function renderTemaGrid() {
+      var grid = document.getElementById("temaGrid");
+      grid.innerHTML = Object.keys(window.TEMA_SEKOLAH).map(function (key) {
+        var t = window.TEMA_SEKOLAH[key];
+        var v = t.vars;
+        return '<div class="tema-card' + (key === temaAktif ? " active" : "") + '" data-tema="' + key + '">' +
+          '<span class="check"><span class="material-symbols-outlined" style="font-size:16px">check</span></span>' +
+          '<div class="swatch">' +
+            '<span style="background:' + v["--heritage-navy"] + '"></span>' +
+            '<span style="background:' + v["--primary"] + '"></span>' +
+            '<span style="background:' + v["--academic-gold"] + '"></span>' +
+            '<span style="background:' + v["--surface"] + ';border:1px solid #ddd"></span>' +
+          "</div>" +
+          '<div class="nama">' + t.nama + "</div>" +
+          '<div class="desc">' + t.deskripsi + "</div>" +
+        "</div>";
+      }).join("");
+    }
+
+    function renderKustomFields() {
+      var t = window.TEMA_SEKOLAH[temaAktif] || window.TEMA_SEKOLAH.nusantara;
+      var grid = document.getElementById("kustomGrid");
+      grid.innerHTML = WARNA_FIELDS.map(function (f) {
+        var val = (kustomAktif && kustomAktif[f.key]) || t.vars[f.key] || "#000000";
+        return '<div class="color-field">' +
+          '<span class="cf-label">' + f.label + "</span>" +
+          '<div class="cf-row">' +
+            '<input type="color" data-warna="' + f.key + '" value="' + val + '">' +
+            '<input type="text" data-warna-text="' + f.key + '" value="' + val + '">' +
+          "</div>" +
+        "</div>";
+      }).join("");
+
+      // sinkronkan color picker <-> text
+      grid.querySelectorAll('input[type="color"]').forEach(function (c) {
+        c.addEventListener("input", function () {
+          grid.querySelector('[data-warna-text="' + c.getAttribute("data-warna") + '"]').value = c.value;
+          previewKustom();
+        });
+      });
+      grid.querySelectorAll('input[type="text"]').forEach(function (t) {
+        t.addEventListener("input", function () {
+          var c = grid.querySelector('[data-warna="' + t.getAttribute("data-warna-text") + '"]');
+          if (/^#[0-9a-fA-F]{6}$/.test(t.value)) { c.value = t.value; previewKustom(); }
+        });
+      });
+    }
+
+    function previewKustom() {
+      if (!document.getElementById("chkKustom").checked) return;
+      var kustom = {};
+      document.querySelectorAll("[data-warna]").forEach(function (c) {
+        kustom[c.getAttribute("data-warna")] = c.value;
+      });
+      kustom["--font-head"] = document.getElementById("fontHead").value;
+      kustom["--font-body"] = document.getElementById("fontBody").value;
+      window.applyThemeSekolah(temaAktif, kustom);
+    }
+
+    document.getElementById("temaGrid").addEventListener("click", function (e) {
+      var card = e.target.closest("[data-tema]");
+      if (!card) return;
+      temaAktif = card.getAttribute("data-tema");
+      renderTemaGrid();
+      renderKustomFields();
+      window.applyThemeSekolah(temaAktif, document.getElementById("chkKustom").checked ? bacaKustom() : null);
+    });
+
+    function bacaKustom() {
+      var kustom = {};
+      document.querySelectorAll("[data-warna]").forEach(function (c) {
+        kustom[c.getAttribute("data-warna")] = c.value;
+      });
+      kustom["--font-head"] = document.getElementById("fontHead").value;
+      kustom["--font-body"] = document.getElementById("fontBody").value;
+      return kustom;
+    }
+
+    document.getElementById("chkKustom").addEventListener("change", function () {
+      var on = this.checked;
+      document.getElementById("kustomFields").style.display = on ? "" : "none";
+      if (on) {
+        renderKustomFields();
+      } else {
+        window.applyThemeSekolah(temaAktif, null);
+      }
+    });
+
+    document.getElementById("fontHead").addEventListener("change", previewKustom);
+    document.getElementById("fontBody").addEventListener("change", previewKustom);
+
+    document.getElementById("btnSimpanKustom").addEventListener("click", function () {
+      DB.getTema().then(function (t) {
+        var data = {
+          aktif: temaAktif,
+          kustom: document.getElementById("chkKustom").checked ? bacaKustom() : null,
+          heroGambar: document.getElementById("heroGambar").value.trim(),
+          footerSize: document.getElementById("footerSize").value
+        };
+        return DB.simpanTema(data);
+      }).then(function () {
+        AdminShell.toast("Tema disimpan. Muat ulang halaman publik untuk melihat.");
+      });
+    });
+
+    document.getElementById("btnResetKustom").addEventListener("click", function () {
+      document.getElementById("chkKustom").checked = false;
+      document.getElementById("kustomFields").style.display = "none";
+      window.applyThemeSekolah(temaAktif, null);
+      DB.simpanTema({ aktif: temaAktif, kustom: null }).then(function () {
+        AdminShell.toast("Kustomisasi dihapus, kembali ke tema terpilih.");
+      });
+    });
+
+    // upload & preview gambar hero
+    function updateHeroPreview() {
+      var v = document.getElementById("heroGambar").value.trim();
+      var el = document.getElementById("heroPreview");
+      el.style.backgroundImage = v ? "url('" + (v.startsWith("assets/") ? "../" + v : v) + "')" : "none";
+    }
+    document.getElementById("heroGambar").addEventListener("input", updateHeroPreview);
+
+    document.getElementById("heroFile").addEventListener("change", function () {
+      var file = this.files[0];
+      if (!file) return;
+      if (file.size > 3 * 1024 * 1024) {
+        document.getElementById("heroUploadStatus").textContent = "File terlalu besar (maks 3 MB).";
+        return;
+      }
+      document.getElementById("heroUploadStatus").textContent = "Mengunggah…";
+      var reader = new FileReader();
+      reader.onload = function () {
+        var base64 = reader.result.split(",")[1];
+        fetch("/api/upload", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sessionStorage.getItem("cms_token") },
+          body: JSON.stringify({ filename: "hero-" + Date.now() + "-" + file.name.replace(/[^a-zA-Z0-9._-]/g, "-"), dataBase64: base64 })
+        }).then(function (r) { return r.json(); }).then(function (j) {
+          if (j.ok && j.path) {
+            document.getElementById("heroGambar").value = j.path;
+            updateHeroPreview();
+            document.getElementById("heroUploadStatus").textContent = "Terunggah: " + j.path;
+          } else {
+            document.getElementById("heroUploadStatus").textContent = "Gagal: " + (j.error || "tidak diketahui");
+          }
+        }).catch(function () {
+          document.getElementById("heroUploadStatus").textContent = "Server tidak merespons.";
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // muat tema tersimpan
+    DB.getTema().then(function (t) {
+      temaAktif = t.aktif || "nusantara";
+      kustomAktif = t.kustom || null;
+      if (kustomAktif) {
+        document.getElementById("chkKustom").checked = true;
+        document.getElementById("kustomFields").style.display = "";
+        if (kustomAktif["--font-head"]) document.getElementById("fontHead").value = kustomAktif["--font-head"];
+        if (kustomAktif["--font-body"]) document.getElementById("fontBody").value = kustomAktif["--font-body"];
+      }
+      renderTemaGrid();
+      renderKustomFields();
+      // hero & footer
+      document.getElementById("heroGambar").value = t.heroGambar || "";
+      document.getElementById("footerSize").value = t.footerSize || "normal";
+      updateHeroPreview();
+    });
+
+    // simpan hero + footer (ikutkan tema yang sedang dipilih di UI)
+    document.getElementById("btnSimpanHero").addEventListener("click", function () {
+      DB.getTema().then(function (t) {
+        t.aktif = temaAktif;
+        t.kustom = document.getElementById("chkKustom").checked ? bacaKustom() : null;
+        t.heroGambar = document.getElementById("heroGambar").value.trim();
+        t.footerSize = document.getElementById("footerSize").value;
+        return DB.simpanTema(t);
+      }).then(function () {
+        AdminShell.toast("Pengaturan tema, hero & footer disimpan.");
+      });
+    });
+  </script>
+</body>
+</html>

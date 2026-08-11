@@ -1,0 +1,72 @@
+/* ============================================================
+   themes.css — variasi LAYOUT per tema (bukan hanya warna).
+   Dipasang setelah style.css. Selector pakai body.tema-<nama>.
+   ============================================================ */
+
+/* ---------- NUANSA (bawaan): tidak diubah ---------- */
+/* (style.css sudah merepresentasikan tema ini) */
+
+/* ---------- AL-IZZAH: islami modern, hero tengah, font Philosopher ---------- */
+body.tema-alizzah h1, body.tema-alizzah h2, body.tema-alizzah h3, body.tema-alizzah .brand .b1 {
+  font-family: 'Philosopher', serif; font-weight: 700;
+}
+body.tema-alizzah .hero { min-height: 620px; align-items: center; text-align: center; }
+body.tema-alizzah .hero .container { display: flex; flex-direction: column; align-items: center; padding-bottom: 72px; }
+body.tema-alizzah .hero::after { background: linear-gradient(to bottom, rgba(61,44,90,0.75), rgba(61,44,90,0.55), rgba(61,44,90,0.85)); }
+body.tema-alizzah .hero h1 { font-size: 44px; letter-spacing: 0; }
+@media (min-width:768px){ body.tema-alizzah .hero h1 { font-size: 56px; line-height: 1.15; } }
+body.tema-alizzah .kicker { background: rgba(248,181,0,0.18); border: 1px solid rgba(248,181,0,0.35); }
+body.tema-alizzah .mainnav { border-bottom: 2px solid var(--academic-gold); }
+body.tema-alizzah .nav-links a.active::after { background: var(--academic-gold); height: 3px; }
+body.tema-alizzah .btn-gold { border-radius: 99px; padding: 14px 28px; }
+body.tema-alizzah .card, body.tema-alizzah .news-card, body.tema-alizzah .feature-card { border-radius: 1rem; }
+body.tema-alizzah .stats-band { background: linear-gradient(120deg, var(--heritage-navy), #4a1a9e); }
+body.tema-alizzah .cta-band { border-radius: 1.25rem; }
+body.tema-alizzah .section-head::before { background: var(--academic-gold); border-radius: 99px; width: 6px; }
+body.tema-alizzah .page-hero .container { text-align: center; display: flex; flex-direction: column; align-items: center; }
+body.tema-alizzah .breadcrumb { justify-content: center; }
+
+/* ---------- LUQMAN AL-HAKIM: hijau segar, kartu lebih besar, sudut lebih bulat ---------- */
+body.tema-luqman .mainnav .container { height: 80px; }
+body.tema-luqman .brand .logo-badge { border-radius: 12px; }
+body.tema-luqman .hero { min-height: 560px; }
+body.tema-luqman .hero::after { background: linear-gradient(to top, var(--heritage-navy) 0%, rgba(15,38,69,0.5) 60%, rgba(15,38,69,0.2) 100%); }
+body.tema-luqman .btn-gold { background: var(--academic-gold); color: #06281e; border-radius: 10px; }
+body.tema-luqman .feature-card { border-radius: 1rem; padding: 28px; }
+body.tema-luqman .feature-card .icon { border-radius: 12px; width: 56px; height: 56px; }
+body.tema-luqman .news-card, body.tema-luqman .card { border-radius: 1rem; }
+body.tema-luqman .chip { border-radius: 10px; }
+body.tema-luqman .section-head h2 { font-size: 26px; }
+body.tema-luqman .stats-band { background: var(--heritage-navy); }
+body.tema-luqman .stat .num { color: #6ee7b7; }
+
+/* ---------- SMAN 1 YOGYAKARTA: biru korporat klasik, lebih rapat & institusional ---------- */
+body.tema-sman1yogya body, body.tema-sman1yogya { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+body.tema-sman1yogya h1, body.tema-sman1yogya h2, body.tema-sman1yogya h3 { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 700; }
+body.tema-sman1yogya .topbar { background: #1f3864; font-size: 12px; }
+body.tema-sman1yogya .topbar .container { height: 34px; }
+body.tema-sman1yogya .mainnav { border-bottom: 1px solid #d8d8d8; box-shadow: none; }
+body.tema-sman1yogya .mainnav .container { height: 64px; }
+body.tema-sman1yogya .brand .logo-badge { border-radius: 4px; }
+body.tema-sman1yogya .nav-links a { font-size: 14px; padding: 8px 12px; }
+body.tema-sman1yogya .hero { min-height: 460px; }
+body.tema-sman1yogya .hero h1 { font-size: 36px; }
+@media (min-width:768px){ body.tema-sman1yogya .hero h1 { font-size: 44px; } }
+body.tema-sman1yogya .btn-gold { background: #f0ad4e; color: #222; border-radius: 4px; }
+body.tema-sman1yogya .card, body.tema-sman1yogya .news-card, body.tema-sman1yogya .feature-card { border-radius: 4px; }
+body.tema-sman1yogya .stats-band { background: #1f3864; }
+body.tema-sman1yogya .stat .num { color: #f0ad4e; }
+body.tema-sman1yogya .section-head::before { width: 3px; background: #f0ad4e; }
+body.tema-sman1yogya .cta-band { border-radius: 4px; }
+
+/* ---------- Variasi footer (dikontrol dari admin) ---------- */
+body.footer-compact .footer-grid { padding-block: 28px 20px; }
+body.footer-compact .footer-brand p { font-size: 13px; }
+body.footer-compact .footer-bottom { padding-block: 14px; font-size: 12px; }
+body.footer-normal .footer-grid { padding-block: 48px 32px; }
+body.footer-normal .footer-bottom { padding-block: 20px; }
+body.footer-lebar .footer-grid { padding-block: 64px 40px; }
+body.footer-lebar .footer-bottom { padding-block: 24px; }
+
+/* ---------- Hero dengan gambar kustom dari admin ---------- */
+.hero[style*="cms-hero"], .page-hero[style*="cms-hero"] { background-size: cover !important; background-position: center !important; }

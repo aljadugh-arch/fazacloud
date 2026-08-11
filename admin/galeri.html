@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galeri Kegiatan — Panel Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <script src="../assets/js/theme.js"></script>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/themes.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
+  <style>
+    .galeri-grid-admin { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+    .galeri-item { border: var(--border-card); border-radius: var(--radius-lg); overflow: hidden; background: var(--surface-white); }
+    .galeri-item img { width: 100%; height: 150px; object-fit: cover; background: var(--surface-variant); }
+    .galeri-item .body { padding: 12px 14px; }
+    .galeri-item .judul { font-weight: 600; font-size: 14px; }
+    .galeri-item .meta { font-size: 12px; color: var(--outline); margin-top: 2px; }
+    .galeri-item .actions { display: flex; gap: 6px; margin-top: 10px; }
+  </style>
+</head>
+<body class="admin">
+
+  <div id="adminContentSource" style="display:none">
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Galeri Kegiatan (<span id="totalGaleri">0</span>)</h2>
+        <button class="btn btn-sm btn-navy" id="btnTambah"><span class="material-symbols-outlined">add</span> Tambah Foto</button>
+      </div>
+      <div class="galeri-grid-admin" id="gridGaleri"></div>
+    </div>
+
+    <div class="panel form-panel" id="panelForm" style="display:none">
+      <h2 id="formTitle">Tambah Foto</h2>
+      <form id="formGaleri" class="form-grid">
+        <input type="hidden" id="galId">
+        <div class="field">
+          <label for="galJudul">Judul / Caption <span class="req">*</span></label>
+          <input id="galJudul" type="text" required placeholder="Contoh: Juara 1 Olimpiade Sains">
+        </div>
+        <div class="form-row two">
+          <div class="field">
+            <label>Foto <span class="req">*</span></label>
+            <div id="uploaderGaleri"></div>
+            <input type="hidden" id="galGambar">
+            <small class="muted" style="display:block;margin-top:6px">Rekomendasi: <strong>800 × 800 px</strong> (kotak) atau <strong>800 × 600 px</strong> (lebar), maks 3 MB.</small>
+          </div>
+          <div class="field">
+            <label for="galBentuk">Bentuk Tampilan</label>
+            <div class="select-wrap">
+              <select id="galBentuk">
+                <option value="kotak">Kotak (1:1)</option>
+                <option value="lebar">Lebar (4:3)</option>
+              </select>
+              <span class="material-symbols-outlined">expand_more</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-navy" type="submit"><span class="material-symbols-outlined">save</span> Simpan</button>
+          <button class="btn btn-ghost" type="button" id="btnBatal">Batal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../assets/js/site.js"></script>
+  <script src="../assets/js/artikel-data.js"></script>
+  <script src="../assets/js/admin-data.js"></script>
+  <script src="../assets/js/admin-common.js"></script>
+  <script>
+    AdminShell.build("Galeri Kegiatan");
+    AdminShell.imageUploader("uploaderGaleri", "galGambar", 90);
+
+    function render() {
+      DB.galeri.get().then(function (arr) {
+        document.getElementById("totalGaleri").textContent = arr.length;
+        var grid = document.getElementById("gridGaleri");
+        if (!arr.length) {
+          grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><span class="material-symbols-outlined">photo_library</span><p>Belum ada foto di galeri.</p></div>';
+          return;
+        }
+        grid.innerHTML = arr.map(function (g) {
+          var src = g.gambar.startsWith("assets/") ? "../" + g.gambar : g.gambar;
+          return '<div class="galeri-item">' +
+            '<img src="' + AdminShell.escHtml(src) + '" alt="' + AdminShell.escHtml(g.judul) + '">' +
+            '<div class="body"><div class="judul">' + AdminShell.escHtml(g.judul) + '</div>' +
+            '<div class="meta">' + (g.bentuk === "lebar" ? "Lebar 4:3" : "Kotak 1:1") + "</div>" +
+            '<div class="actions">' +
+              '<button class="btn-icon" title="Edit" data-edit="' + g.id + '"><span class="material-symbols-outlined">edit</span></button>' +
+              '<button class="btn-icon danger" title="Hapus" data-hapus="' + g.id + '"><span class="material-symbols-outlined">delete</span></button>' +
+            "</div></div></div>";
+        }).join("");
+      });
+    }
+
+    function bukaForm(data) {
+      document.getElementById("panelForm").style.display = "";
+      document.getElementById("formTitle").textContent = data ? "Edit Foto" : "Tambah Foto";
+      document.getElementById("galId").value = data ? data.id : "";
+      document.getElementById("galJudul").value = data ? data.judul : "";
+      document.getElementById("uploaderGaleri").setValue(data ? data.gambar : "");
+      document.getElementById("galBentuk").value = data ? data.bentuk : "kotak";
+      document.getElementById("galJudul").focus();
+    }
+    function tutupForm() { document.getElementById("panelForm").style.display = "none"; }
+
+    document.getElementById("btnTambah").addEventListener("click", function () { bukaForm(null); });
+    document.getElementById("btnBatal").addEventListener("click", tutupForm);
+
+    document.getElementById("gridGaleri").addEventListener("click", function (e) {
+      var edit = e.target.closest("[data-edit]");
+      if (edit) {
+        DB.galeri.get().then(function (arr) {
+          bukaForm(arr.find(function (x) { return x.id === edit.getAttribute("data-edit"); }));
+        });
+        return;
+      }
+      var hapus = e.target.closest("[data-hapus]");
+      if (hapus && confirm("Hapus foto ini dari galeri?")) {
+        DB.galeri.hapus(hapus.getAttribute("data-hapus")).then(function () {
+          AdminShell.toast("Foto dihapus.");
+          render();
+        });
+      }
+    });
+
+    document.getElementById("formGaleri").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var id = document.getElementById("galId").value;
+      DB.galeri.simpan({
+        id: id || "gl" + Date.now(),
+        judul: document.getElementById("galJudul").value.trim(),
+        gambar: document.getElementById("uploaderGaleri").getValue(),
+        bentuk: document.getElementById("galBentuk").value
+      }).then(function () {
+        AdminShell.toast("Foto disimpan.");
+        tutupForm();
+        render();
+      });
+    });
+
+    render();
+  </script>
+</body>
+</html>
