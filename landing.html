@@ -37,27 +37,31 @@
     .btn-outline-n:hover { background: var(--dk-navy); color: #fff; }
     .btn-lg { padding: 15px 32px; font-size: 16px; border-radius: 10px; }
 
-    /* NAV */
-    .dk-nav { position: sticky; top: 0; z-index: 100; background: var(--dk-navy); box-shadow: 0 2px 12px rgba(0,0,0,0.15); }
-    .dk-nav .container { display: flex; align-items: center; height: 68px; }
-    .dk-brand { display: flex; align-items: center; gap: 10px; color: #fff; font-weight: 800; font-size: 20px; flex: none; text-decoration: none; }
-    .dk-brand .logo { width: 38px; height: 38px; border-radius: 9px; background: var(--dk-green); display: flex; align-items: center; justify-content: center; font-weight: 900; color: #042a52; font-size: 16px; }
+    /* NAV — floating pill seperti digitalku.com */
+    .dk-nav-wrap { position: fixed; top: 18px; left: 0; right: 0; z-index: 100; display: flex; justify-content: center; padding: 0 20px; pointer-events: none; }
+    .dk-nav { display: flex; align-items: center; height: 58px; background: rgba(4, 42, 82, 0.92); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 0 10px 0 18px; gap: 0; box-shadow: 0 8px 32px rgba(0,0,0,0.28); pointer-events: all; width: 100%; max-width: 960px; }
+    .dk-brand { display: flex; align-items: center; gap: 10px; color: #fff; font-weight: 800; font-size: 18px; flex: none; text-decoration: none; white-space: nowrap; }
+    .dk-brand .logo { width: 34px; height: 34px; border-radius: 50%; background: var(--dk-green); display: flex; align-items: center; justify-content: center; font-weight: 900; color: #042a52; font-size: 14px; flex: none; }
     .dk-brand span { color: var(--dk-green); }
-    .dk-nav-center { flex: 1; display: flex; justify-content: center; align-items: center; gap: 2px; }
-    .dk-nav-center a { color: rgba(255,255,255,0.85); font-weight: 500; font-size: 15px; padding: 8px 14px; border-radius: 6px; white-space: nowrap; }
+    .dk-nav-center { flex: 1; display: flex; justify-content: center; align-items: center; gap: 0; }
+    .dk-nav-center a { color: rgba(255,255,255,0.82); font-weight: 500; font-size: 14px; padding: 7px 13px; border-radius: 999px; white-space: nowrap; transition: all 0.15s; }
     .dk-nav-center a:hover { color: #fff; background: rgba(255,255,255,0.1); }
-    .dk-nav-right { flex: none; display: flex; align-items: center; gap: 8px; }
-    .dk-nav-right a { color: rgba(255,255,255,0.85); font-weight: 500; font-size: 15px; padding: 8px 14px; border-radius: 6px; }
-    .dk-nav-right a:hover { color: #fff; }
-    .dk-toggle { display: none; margin-left: 12px; background: none; border: 0; color: #fff; cursor: pointer; padding: 4px; }
+    .dk-nav-right { flex: none; display: flex; align-items: center; gap: 6px; }
+    .dk-nav-right a.login-link { color: rgba(255,255,255,0.82); font-weight: 500; font-size: 14px; padding: 7px 13px; border-radius: 999px; transition: all 0.15s; }
+    .dk-nav-right a.login-link:hover { color: #fff; background: rgba(255,255,255,0.1); }
+    .dk-toggle { display: none; background: none; border: 0; color: #fff; cursor: pointer; padding: 6px; margin-left: 4px; }
+    /* hero perlu padding-top agar tidak tertutup nav */
+    .dk-hero { padding-top: 110px !important; }
     @media (max-width: 860px) {
+      .dk-nav-wrap { top: 12px; padding: 0 12px; }
+      .dk-nav { max-width: 100%; padding: 0 8px 0 14px; }
       .dk-nav-center { display: none; }
       .dk-nav-right .hide-m { display: none; }
       .dk-toggle { display: flex; }
-      .dk-nav-mobile { display: none; position: absolute; top: 68px; left: 0; right: 0; background: var(--dk-navy); flex-direction: column; align-items: stretch; padding: 12px 20px 20px; z-index: 99; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+      .dk-nav-mobile { display: none; position: fixed; top: 82px; left: 12px; right: 12px; background: rgba(4,42,82,0.97); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.12); border-radius: 18px; flex-direction: column; align-items: stretch; padding: 8px 12px 14px; z-index: 99; box-shadow: 0 12px 40px rgba(0,0,0,0.35); }
       .dk-nav-mobile.open { display: flex; }
-      .dk-nav-mobile a { color: rgba(255,255,255,0.85); font-weight: 500; font-size: 15px; padding: 11px 4px; border-bottom: 1px solid rgba(255,255,255,0.08); }
-      .dk-nav-mobile a:last-child { border-bottom: 0; margin-top: 8px; text-align: center; }
+      .dk-nav-mobile a { color: rgba(255,255,255,0.85); font-weight: 500; font-size: 15px; padding: 12px 8px; border-bottom: 1px solid rgba(255,255,255,0.08); border-radius: 0; }
+      .dk-nav-mobile a:last-child { border-bottom: 0; margin-top: 6px; text-align: center; border-radius: 999px; }
     }
 
     /* HERO */
@@ -171,31 +175,31 @@
 </head>
 <body>
 
+  <div class="dk-nav-wrap">
   <nav class="dk-nav">
-    <div class="container">
-      <a class="dk-brand" href="landing.html"><span class="logo">FZ</span>Faza<span>Cloud</span></a>
-      <div class="dk-nav-center">
-        <a href="#fitur">Fitur</a>
-        <a href="#cara">Cara Kerja</a>
-        <a href="#jurnal">Jurnal</a>
-        <a href="#harga">Harga</a>
-      </div>
-      <div class="dk-nav-right">
-        <a href="admin/login.html" class="hide-m">Login</a>
-        <a href="register.html" class="btn btn-green">Daftar Gratis</a>
-        <button class="dk-toggle" id="dkToggle" aria-label="Menu"><span class="material-symbols-outlined">menu</span></button>
-      </div>
-    </div>
-    <!-- mobile drawer -->
-    <div class="dk-nav-mobile" id="dkNav">
+    <a class="dk-brand" href="landing.html"><span class="logo">FZ</span>Faza<span>Cloud</span></a>
+    <div class="dk-nav-center">
       <a href="#fitur">Fitur</a>
       <a href="#cara">Cara Kerja</a>
       <a href="#jurnal">Jurnal</a>
       <a href="#harga">Harga</a>
-      <a href="admin/login.html">Login</a>
-      <a href="register.html" class="btn btn-green">Daftar Gratis</a>
+    </div>
+    <div class="dk-nav-right">
+      <a href="admin/login.html" class="login-link hide-m">Login</a>
+      <a href="register.html" class="btn btn-green" style="border-radius:999px;padding:9px 20px;font-size:14px">Daftar Gratis</a>
+      <button class="dk-toggle" id="dkToggle" aria-label="Menu"><span class="material-symbols-outlined">menu</span></button>
     </div>
   </nav>
+  </div>
+  <!-- mobile drawer -->
+  <div class="dk-nav-mobile" id="dkNav">
+    <a href="#fitur">Fitur</a>
+    <a href="#cara">Cara Kerja</a>
+    <a href="#jurnal">Jurnal</a>
+    <a href="#harga">Harga</a>
+    <a href="admin/login.html">Login</a>
+    <a href="register.html" class="btn btn-green">Daftar Gratis</a>
+  </div>
 
   <!-- HERO -->
   <section class="dk-hero">
