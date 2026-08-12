@@ -71,7 +71,7 @@
     .has-drop > a::after { content: "expand_more"; font-family: "Material Symbols Outlined"; font-size: 16px; transition: transform 0.2s; color: rgba(5,56,107,0.6); }
     .has-drop:hover > a::after, .has-drop.open > a::after { transform: rotate(180deg); }
     .drop-menu { display: none; position: absolute; top: calc(100% + 10px); left: 50%; transform: translateX(-50%); min-width: 230px; background: #fff; border: 1px solid rgba(5,56,107,0.1); border-radius: 14px; padding: 8px; box-shadow: 0 8px 32px rgba(5,56,107,0.13); z-index: 200; }
-    .has-drop:hover .drop-menu, .has-drop.open .drop-menu { display: block; }
+    .has-drop.open .drop-menu { display: block; }
     .drop-menu a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; color: rgba(5,56,107,0.85); font-size: 14px; font-weight: 500; white-space: nowrap; }
     .drop-menu a:hover { background: rgba(5,56,107,0.06); color: var(--dk-navy); }
     .drop-menu a .material-symbols-outlined { font-size: 18px; color: var(--dk-green-dark); }
@@ -431,6 +431,48 @@
   </footer>
 
   <script>
+    // Dropdown interaktif: buka saat hover/klik, tutup dengan delay
+    (function () {
+      var timers = {};
+      document.querySelectorAll('.has-drop').forEach(function (el) {
+        var id = Math.random();
+        function open()  { clearTimeout(timers[id]); el.classList.add('open'); }
+        function close() { timers[id] = setTimeout(function () { el.classList.remove('open'); }, 200); }
+
+        // hover
+        el.addEventListener('mouseenter', open);
+        el.addEventListener('mouseleave', close);
+
+        // klik link utama toggle
+        var trigger = el.querySelector(':scope > a');
+        if (trigger) {
+          trigger.addEventListener('click', function (e) {
+            if (window.innerWidth > 860) {
+              e.preventDefault();
+              el.classList.toggle('open');
+              // tutup dropdown lain
+              document.querySelectorAll('.has-drop').forEach(function (other) {
+                if (other !== el) other.classList.remove('open');
+              });
+            }
+          });
+        }
+
+        // tetap terbuka saat mouse masuk ke drop-menu
+        var menu = el.querySelector('.drop-menu');
+        if (menu) {
+          menu.addEventListener('mouseenter', function () { clearTimeout(timers[id]); });
+          menu.addEventListener('mouseleave', close);
+        }
+      });
+
+      // klik di luar tutup semua
+      document.addEventListener('click', function (e) {
+        if (!e.target.closest('.has-drop')) {
+          document.querySelectorAll('.has-drop').forEach(function (el) { el.classList.remove('open'); });
+        }
+      });
+    })();
     document.getElementById('yr').textContent = new Date().getFullYear();
     document.getElementById('dkToggle').addEventListener('click', function () {
       document.getElementById('dkNav').classList.toggle('open');
