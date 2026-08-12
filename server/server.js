@@ -403,8 +403,9 @@ function serveStatic(req, res, url) {
   const filePath = path.normalize(path.join(ROOT, p));
   if (!filePath.startsWith(ROOT)) return send(res, 403, "Forbidden", "text/plain");
   // Blokir akses langsung ke direktori sensitif
-  const blocked = ["/server/", "/node_modules/", "/.git/", "/assets/js/admin-"];
-  if (blocked.some(b => filePath.replace(ROOT, "").startsWith(b))) {
+  const relPath = filePath.replace(ROOT, "").replace(/\\/g, "/");
+  const blocked = ["/server/", "/node_modules/", "/.git/"];
+  if (blocked.some(b => relPath.startsWith(b))) {
     return send(res, 403, "Forbidden", "text/plain");
   }
   const isTenantPage = /^\/t\/[a-z0-9-]+\//.test(decodeURIComponent(url.pathname));
