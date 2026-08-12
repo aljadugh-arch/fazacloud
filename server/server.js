@@ -175,15 +175,12 @@ function sanitize(s) {
   return String(s || "").replace(/[<>'"]/g, c => ({ "<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;" }[c]));
 }
 
-// Tentukan konteks tenant dari URL path (/t/<slug>/...) atau header X-Tenant
+// Tentukan konteks tenant dari URL path (/t/<slug>/...) SAJA
+// X-Tenant header dihapus karena rentan injection tanpa auth
 function resolveTenant(url, req) {
-  // path /t/<slug>/...
   const m = url.pathname.match(/^\/t\/([a-z0-9-]+)/);
   if (m) return m[1];
-  // header
-  const h = req.headers["x-tenant"];
-  if (h && tenantExists(h)) return h;
-  return null; // null = situs utama
+  return null;
 }
 
 // Ambil "database konten" untuk konteks (utama atau tenant)

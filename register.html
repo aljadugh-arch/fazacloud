@@ -154,7 +154,10 @@
       document.getElementById("formRegister").addEventListener("submit", function (e) {
         e.preventDefault();
         var alert = document.getElementById("regAlert");
-        alert.className = "alert";
+        // Cek honeypot anti-bot
+        var honey = document.getElementById("website_url");
+        if (honey && honey.value.trim()) return;
+
         var tipe = document.querySelector('input[name="tipeDomain"]:checked').value;
         var btn = document.getElementById("btnDaftar");
         btn.disabled = true;
