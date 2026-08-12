@@ -68,7 +68,7 @@
     }
 
     /* DROPDOWN — selaras navbar putih */
-    .has-drop { position: relative; }
+    .has-drop { position: relative; display: flex; align-items: center; }
     .has-drop > a { display: flex; align-items: center; gap: 3px; }
     .has-drop > a::after { content: "expand_more"; font-family: "Material Symbols Outlined"; font-size: 16px; transition: transform 0.2s; color: rgba(5,56,107,0.6); }
     .has-drop:hover > a::after, .has-drop.open > a::after { transform: rotate(180deg); }
@@ -435,45 +435,25 @@
   </footer>
 
   <script>
-    // Dropdown interaktif: buka saat hover/klik, tutup dengan delay
-    (function () {
-      var timers = {};
-      document.querySelectorAll('.has-drop').forEach(function (el) {
-        var id = Math.random();
-        function open()  { clearTimeout(timers[id]); el.classList.add('open'); }
-        function close() { timers[id] = setTimeout(function () { el.classList.remove('open'); }, 350); }
-
-        // hover
-        el.addEventListener('mouseenter', open);
-        el.addEventListener('mouseleave', close);
-
-        // klik link utama toggle
+    // Dropdown: klik untuk toggle, klik luar untuk tutup
+    (function() {
+      document.querySelectorAll('.has-drop').forEach(function(el) {
         var trigger = el.querySelector(':scope > a');
-        if (trigger) {
-          trigger.addEventListener('click', function (e) {
-            if (window.innerWidth > 860) {
-              e.preventDefault();
-              el.classList.toggle('open');
-              // tutup dropdown lain
-              document.querySelectorAll('.has-drop').forEach(function (other) {
-                if (other !== el) other.classList.remove('open');
-              });
-            }
-          });
-        }
-
-        // tetap terbuka saat mouse masuk ke drop-menu
-        var menu = el.querySelector('.drop-menu');
-        if (menu) {
-          menu.addEventListener('mouseenter', function () { clearTimeout(timers[id]); });
-          menu.addEventListener('mouseleave', close);
-        }
+        if (!trigger) return;
+        trigger.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          var isOpen = el.classList.contains('open');
+          // tutup semua
+          document.querySelectorAll('.has-drop').forEach(function(x) { x.classList.remove('open'); });
+          // buka ini jika sebelumnya tertutup
+          if (!isOpen) el.classList.add('open');
+        });
       });
-
       // klik di luar tutup semua
-      document.addEventListener('click', function (e) {
+      document.addEventListener('click', function(e) {
         if (!e.target.closest('.has-drop')) {
-          document.querySelectorAll('.has-drop').forEach(function (el) { el.classList.remove('open'); });
+          document.querySelectorAll('.has-drop').forEach(function(x) { x.classList.remove('open'); });
         }
       });
     })();
