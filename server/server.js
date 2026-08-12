@@ -123,7 +123,14 @@ const MIME = {
 };
 
 function send(res, code, body, type = "application/json; charset=utf-8") {
-  res.writeHead(code, { "Content-Type": type });
+  res.writeHead(code, {
+    "Content-Type": type,
+    "X-Frame-Options": "SAMEORIGIN",
+    "X-Content-Type-Options": "nosniff",
+    "X-XSS-Protection": "1; mode=block",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=()"
+  });
   if (Buffer.isBuffer(body)) return res.end(body);
   res.end(typeof body === "string" ? body : JSON.stringify(body));
 }
@@ -140,6 +147,32 @@ function readBody(req) {
 
 function slugify(s) {
   return String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
+}
+
+// ---------- Rate limiting ----------
+const rateLimitMap = new Map(); // key -> { count, resetAt }
+function rateLimit(key, maxPerMinute) {
+  const now = Date.now();
+  const entry = rateLimitMap.get(key) || { count: 0, resetAt: now + 60000 };
+  if (now > entry.resetAt) { entry.count = 0; entry.resetAt = now + 60000; }
+  entry.count++;
+  rateLimitMap.set(key, entry);
+  return entry.count > maxPerMinute;
+}
+
+// ---------- Password hash (sha256 + salt sederhana, tanpa dep eksternal) ----------
+function hashPassword(plain) {
+  return crypto.createHash("sha256").update("fazacloud:" + plain).digest("hex");
+}
+function verifyPassword(plain, hashed) {
+  // dukung plaintext lama (migrasi) dan hash baru
+  if (hashed.length === 64) return hashPassword(plain) === hashed;
+  return plain === hashed; // plaintext legacy
+}
+
+// ---------- Sanitasi teks untuk mencegah XSS di JSON output ----------
+function sanitize(s) {
+  return String(s || "").replace(/[<>'"]/g, c => ({ "<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;" }[c]));
 }
 
 // Tentukan konteks tenant dari URL path (/t/<slug>/...) atau header X-Tenant
@@ -174,8 +207,10 @@ async function handleApi(req, res, url) {
 
   // ---- LOGIN (tenant-aware) ----
   if (cleanRoute === "/api/login" && method === "POST") {
+    const ip = req.socket.remoteAddress || "unknown";
+    if (rateLimit("login:" + ip, 10)) return send(res, 429, { ok: false, error: "Terlalu banyak percobaan. Coba lagi 1 menit." });
     const body = await readBody(req);
-    if (cdb.admin && body.email === cdb.admin.email && body.password === cdb.admin.password) {
+    if (cdb.admin && body.email === cdb.admin.email && verifyPassword(body.password, cdb.admin.password)) {
       return send(res, 200, { ok: true, token: makeToken(body.email, slug), email: body.email, tenant: slug });
     }
     return send(res, 401, { ok: false, error: "Email atau kata sandi salah." });
@@ -215,13 +250,15 @@ async function handleApi(req, res, url) {
 
   // ---- REGISTER TENANT BARU (publik) -> BUAT INSTANCE ----
   if (cleanRoute === "/api/register" && method === "POST") {
+    const ip = req.socket.remoteAddress || "unknown";
+    if (rateLimit("register:" + ip, 5)) return send(res, 429, { ok: false, error: "Terlalu banyak pendaftaran. Coba lagi 1 menit." });
     const body = await readBody(req);
-    const namaLembaga = String(body.namaLembaga || "").trim();
-    const email = String(body.email || "").trim();
-    const password = String(body.password || "");
+    const namaLembaga = String(body.namaLembaga || "").trim().slice(0, 120);
+    const email = String(body.email || "").trim().slice(0, 120);
+    const password = String(body.password || "").slice(0, 72);
     const tipeDomain = body.tipeDomain === "custom" ? "custom" : "subdomain";
-    const subdomain = String(body.subdomain || "").toLowerCase().replace(/[^a-z0-9-]/g, "");
-    const domainCustom = String(body.domainCustom || "").toLowerCase().trim();
+    const subdomain = String(body.subdomain || "").toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 40);
+    const domainCustom = String(body.domainCustom || "").toLowerCase().trim().slice(0, 120);
 
     if (!namaLembaga) return send(res, 400, { ok: false, error: "Nama lembaga wajib diisi." });
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return send(res, 400, { ok: false, error: "Email tidak valid." });
@@ -249,10 +286,10 @@ async function handleApi(req, res, url) {
       domain = domainCustom;
     }
 
-    // BUAT INSTANCE: seed konten tenant
+    // BUAT INSTANCE: seed konten tenant, hash password
     const inisial = namaLembaga.split(/\s+/).map((w) => w[0]).join("").replace(/[^A-Za-z]/g, "").toUpperCase().slice(0, 3) || "SCH";
     const content = defaultContent(namaLembaga, inisial, email);
-    content.admin.password = password;
+    content.admin.password = hashPassword(password);
     saveTenant(slug, content);
 
     const tenant = {
@@ -280,9 +317,9 @@ async function handleApi(req, res, url) {
     if (!tdb) return send(res, 404, { ok: false, error: "Tenant tidak ditemukan" });
     const body = await readBody(req);
     if (!body.passwordLama || !body.passwordBaru) return send(res, 400, { ok: false, error: "passwordLama & passwordBaru wajib" });
-    if (body.passwordLama !== tdb.admin.password) return send(res, 400, { ok: false, error: "Kata sandi lama salah." });
+    if (body.passwordLama !== tdb.admin.password && !verifyPassword(body.passwordLama, tdb.admin.password)) return send(res, 400, { ok: false, error: "Kata sandi lama salah." });
     if (String(body.passwordBaru).length < 6) return send(res, 400, { ok: false, error: "Kata sandi baru minimal 6 karakter." });
-    tdb.admin.password = String(body.passwordBaru);
+    tdb.admin.password = hashPassword(String(body.passwordBaru));
     auth.slug ? saveTenant(auth.slug, tdb) : saveData();
     return send(res, 200, { ok: true });
   }
@@ -327,12 +364,22 @@ async function handleApi(req, res, url) {
   if (cleanRoute === "/api/upload" && method === "POST") {
     const body = await readBody(req);
     if (!body.filename || !body.dataBase64) return send(res, 400, { ok: false, error: "filename & dataBase64 wajib" });
-    const safeName = body.filename.replace(/[^a-zA-Z0-9._-]/g, "-").toLowerCase();
+    const safeName = body.filename.replace(/[^a-zA-Z0-9._-]/g, "-").toLowerCase().slice(0, 80);
     const buf = Buffer.from(body.dataBase64, "base64");
     if (buf.length > 3e6) return send(res, 400, { ok: false, error: "Maks 3MB" });
-    const dest = path.join(ROOT, "assets", "img", safeName);
+    // Validasi magic bytes (bukan hanya ekstensi)
+    const magic = buf.slice(0, 4);
+    const isJpeg = magic[0] === 0xFF && magic[1] === 0xD8;
+    const isPng  = magic[0] === 0x89 && magic[1] === 0x50 && magic[2] === 0x4E && magic[3] === 0x47;
+    const isWebp = buf.slice(0,4).toString() === "RIFF" && buf.slice(8,12).toString() === "WEBP";
+    const isGif  = buf.slice(0,3).toString() === "GIF";
+    if (!isJpeg && !isPng && !isWebp && !isGif) return send(res, 400, { ok: false, error: "Format tidak didukung. Gunakan JPG, PNG, WebP, atau GIF." });
+    // Tambahkan ekstensi yang benar
+    const ext = isJpeg ? ".jpg" : isPng ? ".png" : isWebp ? ".webp" : ".gif";
+    const baseName = safeName.replace(/\.[^.]+$/, "") + "-" + Date.now() + ext;
+    const dest = path.join(ROOT, "assets", "img", baseName);
     fs.writeFileSync(dest, buf);
-    return send(res, 200, { ok: true, path: "assets/img/" + safeName });
+    return send(res, 200, { ok: true, path: "assets/img/" + baseName });
   }
 
   return send(res, 404, { ok: false, error: "Endpoint tidak ditemukan" });
@@ -358,6 +405,11 @@ function serveStatic(req, res, url) {
 
   const filePath = path.normalize(path.join(ROOT, p));
   if (!filePath.startsWith(ROOT)) return send(res, 403, "Forbidden", "text/plain");
+  // Blokir akses langsung ke direktori sensitif
+  const blocked = ["/server/", "/node_modules/", "/.git/", "/assets/js/admin-"];
+  if (blocked.some(b => filePath.replace(ROOT, "").startsWith(b))) {
+    return send(res, 403, "Forbidden", "text/plain");
+  }
   const isTenantPage = /^\/t\/[a-z0-9-]+\//.test(decodeURIComponent(url.pathname));
   fs.readFile(filePath, (err, data) => {
     if (err) {
