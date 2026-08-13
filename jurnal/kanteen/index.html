@@ -45,6 +45,7 @@ body{font-family:'Inter',sans-serif;background:var(--surface);min-height:100vh}
 .status.succ{background:#dcfce7;color:#166534}
 .status.err{background:#fee2e2;color:#991b1b}
 </style>
+<link rel="stylesheet" href="../assets/jurnal-shell.css">
 </head>
 <body>
 <header class="header">
@@ -114,5 +115,6 @@ function bayar(){if(!siswaId||keranjang.length===0)return;var total=keranjang.re
 function loadRiwayat(){var today=new Date().toISOString().split('T')[0];fetch(api('/api/jurnal/kanteen/transaksi?tanggal='+today),{headers:auth()}).then(r=>r.json()).then(d=>{if(d.ok){var html='';d.data.slice(0,10).forEach(t=>{html+='<div style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between"><span>'+t.siswa_nama+'</span><span>Rp'+t.total.toLocaleString('id-ID')+'</span></div>';});document.getElementById('riwayat').innerHTML=html||'<div style="color:var(--muted)">Belum ada transaksi</div>';}}).catch(()=>{});}
 loadProduk();loadRiwayat();
 </script>
+<script src="../assets/jurnal-shell.js"></script>
 </body>
 </html>

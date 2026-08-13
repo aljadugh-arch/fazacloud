@@ -44,6 +44,7 @@ th{font-weight:600;color:var(--muted);background:var(--surface)}
 .mobile-nav a.active{color:var(--navy)}
 .mobile-nav .material-symbols-outlined{font-size:24px}
 </style>
+<link rel="stylesheet" href="../assets/jurnal-shell.css">
 </head>
 <body>
 <aside class="sidebar">
@@ -110,5 +111,6 @@ function loadRiwayat(){var bulan=new Date().toISOString().slice(0,7);fetch(api('
 function ceklok(jenis){fetch(api('/api/jurnal/ceklok'),{method:'POST',headers:{...auth(),'Content-Type':'application/json'},body:JSON.stringify({jenis:jenis||'masuk'})}).then(r=>r.json()).then(d=>{if(d.ok){alert('Berhasil '+jenis);loadCeklok();loadRiwayat();}else{alert(d.error||'Gagal');}}).catch(()=>alert('Error'));}
 loadCeklok();loadRiwayat();
 </script>
+<script src="../assets/jurnal-shell.js"></script>
 </body>
 </html>

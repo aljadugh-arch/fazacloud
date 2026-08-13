@@ -41,6 +41,7 @@ th{font-weight:600;color:var(--muted);background:var(--surface)}
 .mobile-nav a.active{color:var(--navy)}
 .mobile-nav .material-symbols-outlined{font-size:24px}
 </style>
+<link rel="stylesheet" href="../assets/jurnal-shell.css">
 </head>
 <body>
 <aside class="sidebar">
@@ -135,5 +136,6 @@ function loadJurnal(){fetch(api('/api/jurnal/jurnal-mengajar'),{headers:auth()})
 function simpan(){var kelas=document.getElementById('kelasSelect').value,mapel=document.getElementById('mapel').value,jam=document.getElementById('jamKe').value,tgl=document.getElementById('tanggal').value,materi=document.getElementById('materi').value,metode=document.getElementById('metode').value,catatan=document.getElementById('catatan').value;if(!kelas||!mapel||!materi)return alert('Isi kelas, mapel, dan materi');fetch(api('/api/jurnal/jurnal-mengajar'),{method:'POST',headers:{...auth(),'Content-Type':'application/json'},body:JSON.stringify({kelas_id:kelas,mapel:mapel,jam_ke:jam,tanggal:tgl,materi:materi,metode:metode,catatan:catatan})}).then(r=>r.json()).then(d=>{if(d.ok){alert('Berhasil');loadJurnal();document.getElementById('materi').value='';document.getElementById('catatan').value='';}else{alert(d.error||'Gagal');}}).catch(()=>alert('Error'));}
 loadKelas();loadJurnal();
 </script>
+<script src="../assets/jurnal-shell.js"></script>
 </body>
 </html>

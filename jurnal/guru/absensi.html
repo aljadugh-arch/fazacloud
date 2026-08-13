@@ -55,6 +55,7 @@
   .mobile-nav a.active{color:var(--navy)}
   .mobile-nav .material-symbols-outlined{font-size:24px}
 </style>
+<link rel="stylesheet" href="../assets/jurnal-shell.css">
 </head>
 <body>
 <aside class="sidebar">
@@ -148,5 +149,6 @@ function scanQR(token){fetch(api('/api/jurnal/absensi/scan'),{method:'POST',head
 function showStatus(msg,type){var el=document.getElementById('scanStatus');el.textContent=msg;el.className='status '+type;el.style.display='block';}
 function simpanManual(){var siswa=document.getElementById('siswaSelect').value,jenis=document.getElementById('statusAbsen').value,ket=document.getElementById('keterangan').value;if(!siswa)return alert('Pilih siswa');fetch(api('/api/jurnal/absensi/siswa'),{method:'POST',headers:{...auth(),'Content-Type':'application/json'},body:JSON.stringify({siswa_id:siswa,jenis:jenis,keterangan:ket})}).then(r=>r.json()).then(d=>{if(d.ok){alert('Berhasil');loadAbsensi();document.getElementById('keterangan').value='';}else{alert(d.error||'Gagal');}}).catch(()=>alert('Error'));}
 </script>
+<script src="../assets/jurnal-shell.js"></script>
 </body>
 </html>
