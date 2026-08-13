@@ -169,5 +169,26 @@
       "aktif": true
     }
   ],
-  "transaksi_kanteen": []
+  "transaksi_kanteen": [],
+  "absensi_kokurikuler": [],
+  "mapel": [],
+  "tahun_ajaran": [],
+  "posting": [],
+  "catatan_kepribadian": [],
+  "modul_ajar": [],
+  "supervisi": [],
+  "broadcast": [],
+  "settings_jurnal": [],
+  "backup_jurnal": [],
+  "wali_kelas": [],
+  "pengajar": [],
+  "rapor": [],
+  "beasiswa": [],
+  "kalender_kbm": [],
+  "wa_gateway": [],
+  "notif_settings": [],
+  "ekskul": [],
+  "domain_setup": [],
+  "erkam": [],
+  "superadmin": []
 }
