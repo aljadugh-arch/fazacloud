@@ -145,9 +145,20 @@ async function handleJurnal(req, res, url, slug, tdb, saveFn) {
     return send(res,200,{ok:true,token:tokenFor(role,u,slug),role,id:u.id,nama:u.nama,slug});
   }
   if (clean === "/api/jurnal/dashboard" && method === "GET") {
-    if (!requireRole(req,["admin","guru"])) return send(res,401,{ok:false,error:"Unauthorized"});
-    const t = today(); const totalKantin = tdb.transaksi_kanteen.filter(x => String(x.tanggal||"").startsWith(t)).reduce((a,b)=>a+asMoney(b.total),0);
-    return send(res,200,{ok:true,data:{siswa:tdb.users.siswa.length,guru:tdb.users.guru.length,absensi_hari_ini:tdb.absensi_siswa.filter(x=>x.tanggal===t).length,transaksi_kanteen_hari_ini:totalKantin,tagihan_belum_lunas:tdb.tagihan.filter(x=>x.status!=="lunas").length}});
+    const s = requireRole(req,["admin","guru","siswa","wali","kasir"]);
+    if (!s) return send(res,401,{ok:false,error:"Unauthorized"});
+    const t = today();
+    const totalKantin = tdb.transaksi_kanteen.filter(x => String(x.tanggal||"").startsWith(t)).reduce((a,b)=>a+asMoney(b.total),0);
+    const base = { siswa:tdb.users.siswa.length,guru:tdb.users.guru.length,absensi_hari_ini:tdb.absensi_siswa.filter(x=>x.tanggal===t).length,transaksi_kanteen_hari_ini:totalKantin,tagihan_belum_lunas:tdb.tagihan.filter(x=>x.status!=="lunas").length };
+    if (s.role === "siswa") {
+      const siswa = tdb.users.siswa.find(x=>x.id===s.id) || {};
+      return send(res,200,{ok:true,data:{...base, ...siswa}});
+    }
+    if (s.role === "wali") {
+      const anak = tdb.users.siswa.filter(x=>x.wali_id===s.id || x.wali_email===s.email);
+      return send(res,200,{ok:true,data:{...base, anak}});
+    }
+    return send(res,200,{ok:true,data:base});
   }
   if (parts[2] === "users" && ROLE_KEYS.includes(parts[3])) return users(req,res,url,slug,tdb,saveFn,parts[3]);
   if (parts[2] === "kelas") return crudList(req,res,url,slug,tdb,saveFn,"kelas",["admin","guru"]);
