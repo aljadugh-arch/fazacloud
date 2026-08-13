@@ -21,9 +21,8 @@
     { href: "ppdb.html", icon: "app_registration", label: "Pendaftar PPDB" },
     { href: "pesan.html", icon: "mail", label: "Pesan Masuk" },
     { href: "tema.html", icon: "palette", label: "Tema & Tampilan" },
-    { href: "https://jurnalmadrasah.web.id", icon: "menu_book", label: "Jurnal", external: true },
-    { href: "pengaturan.html", icon: "settings", label: "Pengaturan Situs" },
-    { href: "../jurnal/login.html", icon: "menu_book", label: "Jurnal Sekolah", external: false, divider: true }
+    { href: "../jurnal/login.html", icon: "menu_book", label: "Jurnal", external: false, divider: true },
+    { href: "pengaturan.html", icon: "settings", label: "Pengaturan Situs" }
   ];
 
   function buildShell(title) {
