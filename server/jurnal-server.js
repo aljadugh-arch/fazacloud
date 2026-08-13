@@ -4,7 +4,7 @@ const crypto = require("crypto");
 const jurnalSessions = new Map();
 const rateMap = new Map();
 const ROLE_KEYS = ["admin", "guru", "siswa", "wali", "kasir"];
-const COLLECTIONS = ["kelas","jadwal","absensi_siswa","absensi_ekskul","absensi_jamaah","absensi_kegiatan","ceklok_guru","jurnal_mengajar","penilaian","tagihan","tabungan","produk_kanteen","transaksi_kanteen"];
+const COLLECTIONS = ["kelas","jadwal","absensi_siswa","absensi_ekskul","absensi_jamaah","absensi_kegiatan","ceklok_guru","jurnal_mengajar","penilaian","tagihan","tabungan","produk_kanteen","transaksi_kanteen","mapel","tahun_ajaran","posting","catatan_kepribadian","modul_ajar","supervisi","broadcast","settings_jurnal","backup_jurnal","wali_kelas","pengajar","rapor","beasiswa"];
 const PREFIX = { guru:"GRU", siswa:"SIS", wali:"WLI", kasir:"KSR", kelas:"KLS", jadwal:"JDW", absensi_siswa:"ABS", absensi_ekskul:"EKS", absensi_jamaah:"JMH", absensi_kegiatan:"KGT", ceklok_guru:"CLK", jurnal_mengajar:"JMG", penilaian:"NIL", tagihan:"TGH", tabungan:"TAB", produk_kanteen:"PRD", transaksi_kanteen:"TRX" };
 
 function send(res, code, body, type = "application/json; charset=utf-8") {
@@ -27,7 +27,7 @@ function readBody(req) {
 }
 function hashPassword(plain) { return crypto.createHash("sha256").update("fazacloud:" + String(plain || "")).digest("hex"); }
 function verifyPassword(plain, stored) { return String(stored || "").length === 64 ? hashPassword(plain) === stored : String(plain || "") === String(stored || ""); }
-function id(prefix) { return prefix + "-" + Date.now() + "-" + crypto.randomBytes(2).toString("hex"); }
+function id(prefix) { return (prefix || "JRN") + "-" + Date.now() + "-" + crypto.randomBytes(2).toString("hex"); }
 function today() { return new Date().toISOString().slice(0, 10); }
 function nowIso() { return new Date().toISOString(); }
 function asMoney(n) { n = Number(n || 0); return Number.isFinite(n) ? n : 0; }
@@ -195,6 +195,23 @@ async function handleJurnal(req, res, url, slug, tdb, saveFn) {
     items.forEach(it=>{ const p=tdb.produk_kanteen.find(x=>x.id===it.produk_id); p.stok=Number(p.stok||0)-it.qty; }); s.saldo_kanteen=asMoney(s.saldo_kanteen)-total;
     const tr={id:id("TRX"),siswa_id:s.id,siswa_nama:s.nama,kasir_id:a.id,tanggal:today(),waktu:nowIso(),items,total,metode:"qr",status:"sukses"}; tdb.transaksi_kanteen.unshift(tr); save(slug,tdb,saveFn); return send(res,200,{ok:true,data:tr});
   }
+  const genericRoutes = {
+    mapel: "mapel",
+    "tahun-ajaran": "tahun_ajaran",
+    posting: "posting",
+    "catatan-kepribadian": "catatan_kepribadian",
+    "modul-ajar": "modul_ajar",
+    supervisi: "supervisi",
+    broadcast: "broadcast",
+    settings: "settings_jurnal",
+    backup: "backup_jurnal",
+    "wali-kelas": "wali_kelas",
+    pengajar: "pengajar",
+    rapor: "rapor",
+    beasiswa: "beasiswa"
+  };
+  if (parts[2] && genericRoutes[parts[2]]) return crudList(req,res,url,slug,tdb,saveFn,genericRoutes[parts[2]],["admin","guru","siswa","wali"]);
+
   return send(res,404,{ok:false,error:"Endpoint jurnal tidak ditemukan"});
 }
 
