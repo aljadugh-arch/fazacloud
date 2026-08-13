@@ -39,6 +39,7 @@ th{font-weight:600;color:var(--muted);background:var(--surface)}
 </style>
 <link rel="stylesheet" href="../assets/jurnal-shell.css">
 <link rel="stylesheet" href="../assets/jurnal-excel.css">
+<link rel="stylesheet" href="../assets/jurnal-feature.css">
 </head>
 <body>
 <header class="header">
@@ -101,6 +102,6 @@ function loadTagihan(){fetch(api('/api/jurnal/tagihan?siswa_id='+USER_ID+'&statu
 loadProfile();loadAbsensi();loadTagihan();
 </script>
 <script src="../assets/jurnal-shell.js"></script>
-<script src="../assets/jurnal-excel.js"></script>
+<script src="../assets/jurnal-feature.js"></script><script src="../assets/jurnal-excel.js"></script>
 </body>
 </html>
