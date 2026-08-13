@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Siswa — Jurnal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{--navy:#05386b;--green:#1da462;--white:#fff;--surface:#f4f6fa;--border:#dde3ed;--text:#1a2a3a;--muted:#6b7a90;--error:#dc3545;--radius:12px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--surface);min-height:100vh}
+.header{background:var(--navy);padding:20px;color:var(--white);position:relative}
+.header-top{display:flex;justify-content:space-between;align-items:center}
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px}
+.brand svg{width:28px;height:28px}
+.user-info{display:flex;align-items:center;gap:10px}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-weight:600}
+.main{padding:20px;max-width:600px;margin:0 auto}
+.card{background:var(--white);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.card-title{font-size:14px;font-weight:600;color:var(--muted);margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px}
+.stat-row{display:flex;gap:12px;margin-bottom:8px}
+.stat{flex:1;background:var(--surface);padding:16px;border-radius:var(--radius);text-align:center}
+.stat-num{font-size:24px;font-weight:700;color:var(--navy)}
+.stat-label{font-size:11px;color:var(--muted);margin-top:4px}
+.qr-box{background:var(--surface);padding:20px;border-radius:var(--radius);text-align:center}
+.qr-box img{max-width:180px}
+.qr-box p{font-size:12px;color:var(--muted);margin-top:8px}
+.btn{width:100%;padding:12px;background:var(--navy);color:var(--white);border:none;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer;margin-top:12px}
+.btn-logout{background:none;border:1px solid rgba(255,255,255,0.3);color:var(--white);padding:6px 16px;border-radius:var(--radius);font-size:13px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--border);font-size:12px}
+th{font-weight:600;color:var(--muted);background:var(--surface)}
+.badge{padding:3px 8px;border-radius:10px;font-size:10px;font-weight:500}
+.badge.hadir{background:#dcfce7;color:#166534}
+.badge.alfa{background:#fee2e2;color:#991b1b}
+</style>
+</head>
+<body>
+<header class="header">
+<div class="header-top">
+<div class="brand">
+<svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="#1da462"/><path d="M12 22L2 17v-5l10-5 10 5v5l-10 5z" fill="#158a50"/><path d="M12 7l-6 3v4l6 3 6-3v-4l-6-3z" fill="#fff"/></svg>
+FazaCloud
+</div>
+<button class="btn-logout" onclick="logout()">Keluar</button>
+</div>
+</header>
+<main class="main">
+<div class="card">
+<div class="card-title">QR Kehadiran</div>
+<div class="qr-box">
+<div id="qrcode"></div>
+<p>Scan untuk absensi &amp; kanteen</p>
+</div>
+</div>
+<div class="card">
+<div class="card-title">Statistik</div>
+<div class="stat-row">
+<div class="stat"><div class="stat-num" id="hadirCount">0</div><div class="stat-label">Hadir</div></div>
+<div class="stat"><div class="stat-num" id="saldo">Rp0</div><div class="stat-label">Saldo Kanteen</div></div>
+</div>
+<div class="stat-row">
+<div class="stat"><div class="stat-nim" id="tagihanCount">0</div><div class="stat-label">Tagihan Belum Lunas</div></div>
+</div>
+</div>
+<div class="card">
+<div class="card-title">Absensi Bulan Ini</div>
+<table>
+<thead><tr><th>Tanggal</th><th>Status</th><th>Datang</th></tr></thead>
+<tbody id="absensiList"></tbody>
+</table>
+</div>
+<div class="card">
+<div class="card-title">Tagihan</div>
+<table>
+<thead><tr><th>Nama</th><th>Nominal</th><th>Status</th></tr></thead>
+<tbody id="tagihanList"></tbody>
+</table>
+</div>
+</main>
+<script>
+var BASE=location.pathname.match(/^\/t\/([a-z0-9-]+)/)?'/t/'+location.pathname.match(/^\/t\/([a-z0-9-]+)/)[1]:'';
+var TOKEN=sessionStorage.getItem('jurnal_token');
+var ROLE=sessionStorage.getItem('jurnal_role');
+var USER_ID=sessionStorage.getItem('jurnal_id');
+var USER_NAME=sessionStorage.getItem('jurnal_nama')||'Siswa';
+if(!TOKEN||ROLE!=='siswa'){location.href=BASE+'/jurnal/login.html';throw'';}
+document.querySelector('.avatar').textContent=USER_NAME.charAt(0).toUpperCase();
+function auth(){return{Authorization:'Bearer '+TOKEN};}
+function api(u){return BASE+u;}
+function logout(){sessionStorage.clear();location.href=BASE+'/jurnal/login.html';}
+function loadProfile(){fetch(api('/api/jurnal/users/siswa/'+USER_ID),{headers:auth()}).then(r=>r.json()).then(d=>{if(d.ok&&d.data){document.getElementById('qrcode').innerHTML='';new QRCode(document.getElementById('qrcode'),{text:d.data.qr_token||USER_ID,width:150,height:150});document.getElementById('saldo').textContent='Rp'+(d.data.saldo_kanteen||0).toLocaleString('id-ID');}}).catch(()=>{});}
+function loadAbsensi(){fetch(api('/api/jurnal/absensi/siswa?siswa_id='+USER_ID),{headers:auth()}).then(r=>r.json()).then(d=>{if(d.ok){var html='';var hadir=0;d.data.slice(0,20).forEach(x=>{if(x.jenis==='hadir')hadir++;html+='<tr><td>'+x.tanggal+'</td><td><span class="badge '+(x.jenis==='hadir'?'hadir':'alfa')+'">'+x.jenis+'</span></td><td>'+(x.jam_datang?new Date(x.jam_datang).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}):'-')+'</td></tr>';});document.getElementById('absensiList').innerHTML=html;document.getElementById('hadirCount').textContent=hadir;}}).catch(()=>{});}
+function loadTagihan(){fetch(api('/api/jurnal/tagihan?siswa_id='+USER_ID+'&status=belum'),{headers:auth()}).then(r=>r.json()).then(d=>{if(d.ok){var html='';d.data.forEach(x=>{html+='<tr><td>'+x.nama+'</td><td>Rp'+x.nominal.toLocaleString('id-ID')+'</td><td><span class="badge alfa">'+x.status+'</span></td></tr>';});document.getElementById('tagihanList').innerHTML=html;document.getElementById('tagihanCount').textContent=d.data.length;}}).catch(()=>{});}
+loadProfile();loadAbsensi();loadTagihan();
+</script>
+</body>
+</html>

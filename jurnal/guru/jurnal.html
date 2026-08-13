@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jurnal Mengajar — Guru</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+<style>
+:root{--navy:#05386b;--green:#1da462;--white:#fff;--surface:#f4f6fa;--border:#dde3ed;--text:#1a2a3a;--muted:#6b7a90;--error:#dc3545;--radius:12px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--surface);min-height:100vh}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:240px;background:var(--navy);padding:20px;color:var(--white);display:flex;flex-direction:column}
+.sidebar-brand{display:flex;align-items:center;gap:10px;margin-bottom:30px}
+.sidebar-brand svg{width:32px;height:32px}
+.sidebar-brand span{font-weight:800;font-size:18px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:var(--radius);color:rgba(255,255,255,0.8);text-decoration:none;margin-bottom:4px;font-size:14px;font-weight:500}
+.nav-item:hover,.nav-item.active{background:rgba(255,255,255,0.15);color:var(--white)}
+.topbar{position:fixed;top:0;left:240px;right:0;height:64px;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:10}
+.topbar-title{font-size:16px;font-weight:600;color:var(--text)}
+.topbar-user{display:flex;align-items:center;gap:10px}
+.topbar-user .avatar{width:36px;height:36px;border-radius:50%;background:var(--navy);color:var(--white);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px}
+.btn-logout{background:none;border:none;color:var(--muted);cursor:pointer;font-family:'Material+Symbols+Outlined';font-size:20px}
+.main{padding:88px 24px 24px 264px}
+.card{background:var(--white);border-radius:16px;padding:24px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.card-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.btn{padding:10px 20px;background:var(--navy);color:var(--white);border:none;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:14px;font-family:inherit}
+textarea{resize:vertical;min-height:80px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:12px;text-align:left;border-bottom:1px solid var(--border);font-size:13px}
+th{font-weight:600;color:var(--muted);background:var(--surface)}
+@media(max-width:768px){.sidebar{display:none}.main{padding:80px 16px 16px 16px}.topbar{left:0}.form-row{grid-template-columns:1fr}}
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--border);padding:8px;justify-content:space-around;z-index:20}
+@media(max-width:768px){.mobile-nav{display:flex}}
+.mobile-nav a{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--muted);text-decoration:none}
+.mobile-nav a.active{color:var(--navy)}
+.mobile-nav .material-symbols-outlined{font-size:24px}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+<div class="sidebar-brand">
+<svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="#1da462"/><path d="M12 22L2 17v-5l10-5 10 5v5l-10 5z" fill="#158a50"/><path d="M12 7l-6 3v4l6 3 6-3v-4l-6-3z" fill="#fff"/></svg>
+<span>FazaCloud</span>
+</div>
+<nav>
+<a href="index.html" class="nav-item"><span class="material-symbols-outlined">dashboard</span> Beranda</a>
+<a href="absensi.html" class="nav-item"><span class="material-symbols-outlined">qr_code_scanner</span> Absensi QR</a>
+<a href="jurnal.html" class="nav-item active"><span class="material-symbols-outlined">menu_book</span> Jurnal Mengajar</a>
+<a href="ceklok.html" class="nav-item"><span class="material-symbols-outlined">how_to_reg</span> Ceklok</a>
+</nav>
+<div style="margin-top:auto">
+<a href="../../jurnal/login.html" class="nav-item"><span class="material-symbols-outlined">logout</span> Keluar</a>
+</div>
+</aside>
+<header class="topbar">
+<div class="topbar-title">Jurnal Mengajar</div>
+<div class="topbar-user">
+<div class="avatar" id="userAvatar">G</div>
+<span id="userName">Guru</span>
+<button class="btn-logout" onclick="logout()">logout</button>
+</div>
+</header>
+<main class="main">
+<div class="card">
+<div class="card-title"><span class="material-symbols-outlined">edit_note</span> Tambah Jurnal</div>
+<div class="form-row">
+<div class="form-group">
+<label>Kelas</label>
+<select id="kelasSelect"><option value="">— Pilih Kelas —</option></select>
+</div>
+<div class="form-group">
+<label>Mapel</label>
+<select id="mapel"><option value="">— Pilih Mapel —</option><option value="Matematika">Matematika</option><option value="Bahasa Indonesia">Bahasa Indonesia</option><option value="Bahasa Inggris">Bahasa Inggris</option><option value="Fisika">Fisika</option><option value="Kimia">Kimia</option><option value="Biologi">Biologi</option><option value="Sejarah">Sejarah</option><option value="PPKn">PPKn</option><option value="Penjas">Penjas</option><option value="Seni">Seni</option></select>
+</div>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label>Jam Ke-</label>
+<input type="number" id="jamKe" min="1" max="12" placeholder="1">
+</div>
+<div class="form-group">
+<label>Tanggal</label>
+<input type="date" id="tanggal">
+</div>
+</div>
+<div class="form-group">
+<label>Materi</label>
+<textarea id="materi" placeholder="Materi yang diajarkan..."></textarea>
+</div>
+<div class="form-group">
+<label>Metode</label>
+<select id="metode"><option value="">— Pilih Metode —</option><option value="Ceramah">Ceramah</option><option value="Diskusi">Diskusi</option><option value="Tugas">Tugas</option><option value="Praktik">Praktik</option><option value="Demonstrasi">Demonstrasi</option></select>
+</div>
+<div class="form-group">
+<label>Catatan</label>
+<textarea id="catatan" placeholder="Catatan tambahan..."></textarea>
+</div>
+<button class="btn" onclick="simpan()">Simpan Jurnal</button>
+</div>
+<div class="card">
+<div class="card-title"><span class="material-symbols-outlined">history</span> Riwayat Jurnal</div>
+<table>
+<thead><tr><th>Tanggal</th><th>Kelas</th><th>Mapel</th><th>Jam</th><th>Materi</th><th>Metode</th></tr></thead>
+<tbody id="jurnalList"></tbody>
+</table>
+</div>
+</main>
+<nav class="mobile-nav">
+<a href="index.html"><span class="material-symbols-outlined">dashboard</span>Beranda</a>
+<a href="absensi.html"><span class="material-symbols-outlined">qr_code_scanner</span>Absensi</a>
+<a href="jurnal.html" class="active"><span class="material-symbols-outlined">menu_book</span>Jurnal</a>
+<a href="ceklok.html"><span class="material-symbols-outlined">how_to_reg</span>Ceklok</a>
+</nav>
+<script>
+var BASE=location.pathname.match(/^\/t\/([a-z0-9-]+)/)?'/t/'+location.pathname.match(/^\/t\/([a-z0-9-]+)/)[1]:'';
+var TOKEN=sessionStorage.getItem('jurnal_token');
+var ROLE=sessionStorage.getItem('jurnal_role');
+var USER_ID=sessionStorage.getItem('jurnal_id');
+var USER_NAME=sessionStorage.getItem('jurnal_nama')||'Guru';
+if(!TOKEN||ROLE!=='guru'){location.href=BASE+'/jurnal/login.html';throw'';}
+document.getElementById('userName').textContent=USER_NAME;
+document.getElementById('userAvatar').textContent=USER_NAME.charAt(0).toUpperCase();
+document.getElementById('tanggal').valueAsDate=new Date();
+function auth(){return{Authorization:'Bearer '+TOKEN};}
+function logout(){sessionStorage.clear();location.href=BASE+'/jurnal/login.html';}
+function api(u){return BASE+u;}
+function loadKelas(){fetch(api('/api/jurnal/kelas'),{headers:auth()}).then(r=>r.json()).then(d=>{if(d.ok){var s=document.getElementById('kelasSelect');s.innerHTML='<option value="">— Pilih Kelas —</option>';d.data.forEach(x=>{s.innerHTML+='<option value="'+x.id+'">'+x.nama+'</option>'});}}).catch(()=>{});}
+function loadJurnal(){fetch(api('/api/jurnal/jurnal-mengajar'),{headers:auth()}).then(r=>r.json()).then(d=>{if(d.ok){var html='';d.data.slice(0,50).forEach(x=>{html+='<tr><td>'+(x.tanggal||'')+'</td><td>'+(x.kelas_nama||'')+'</td><td>'+(x.mapel||'')+'</td><td>'+(x.jam_ke||'')+'</td><td>'+(x.materi||'').slice(0,40)+'</td><td>'+(x.metode||'')+'</td></tr>';});document.getElementById('jurnalList').innerHTML=html||'<tr><td colspan="6" style="text-align:center;color:var(--muted)">Belum ada jurnal</td></tr>';}}).catch(()=>{});}
+function simpan(){var kelas=document.getElementById('kelasSelect').value,mapel=document.getElementById('mapel').value,jam=document.getElementById('jamKe').value,tgl=document.getElementById('tanggal').value,materi=document.getElementById('materi').value,metode=document.getElementById('metode').value,catatan=document.getElementById('catatan').value;if(!kelas||!mapel||!materi)return alert('Isi kelas, mapel, dan materi');fetch(api('/api/jurnal/jurnal-mengajar'),{method:'POST',headers:{...auth(),'Content-Type':'application/json'},body:JSON.stringify({kelas_id:kelas,mapel:mapel,jam_ke:jam,tanggal:tgl,materi:materi,metode:metode,catatan:catatan})}).then(r=>r.json()).then(d=>{if(d.ok){alert('Berhasil');loadJurnal();document.getElementById('materi').value='';document.getElementById('catatan').value='';}else{alert(d.error||'Gagal');}}).catch(()=>alert('Error'));}
+loadKelas();loadJurnal();
+</script>
+</body>
+</html>

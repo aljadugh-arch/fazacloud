@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Absensi QR — Guru</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+<style>
+  :root{--navy:#05386b;--green:#1da462;--white:#fff;--surface:#f4f6fa;--border:#dde3ed;--text:#1a2a3a;--muted:#6b7a90;--error:#dc3545;--radius:12px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',sans-serif;background:var(--surface);min-height:100vh}
+  .sidebar{position:fixed;left:0;top:0;bottom:0;width:240px;background:var(--navy);padding:20px;color:var(--white);display:flex;flex-direction:column}
+  .sidebar-brand{display:flex;align-items:center;gap:10px;margin-bottom:30px}
+  .sidebar-brand svg{width:32px;height:32px}
+  .sidebar-brand span{font-weight:800;font-size:18px}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:var(--radius);color:rgba(255,255,255,0.8);text-decoration:none;margin-bottom:4px;font-size:14px;font-weight:500;transition:background .15s}
+  .nav-item:hover,.nav-item.active{background:rgba(255,255,255,0.15);color:var(--white)}
+  .nav-item .material-symbols-outlined{font-size:20px}
+  .topbar{position:fixed;top:0;left:240px;right:0;height:64px;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:10}
+  .topbar-title{font-size:16px;font-weight:600;color:var(--text)}
+  .topbar-user{display:flex;align-items:center;gap:10px}
+  .topbar-user .avatar{width:36px;height:36px;border-radius:50%;background:var(--navy);color:var(--white);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px}
+  .btn-logout{background:none;border:none;color:var(--muted);cursor:pointer;font-family:'Material+Symbols+Outlined';font-size:20px}
+  .main{padding:88px 24px 24px 264px}
+  .card{background:var(--white);border-radius:16px;padding:24px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+  .card-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+  .btn{padding:10px 20px;background:var(--navy);color:var(--white);border:none;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer}
+  .btn:hover{opacity:.9}
+  .btn-green{background:var(--green)}
+  #video-container{position:relative;width:100%;max-width:400px;height:300px;background:#000;border-radius:var(--radius);overflow:hidden;margin:0 auto}
+  #video{width:100%;height:100%;object-fit:cover}
+  #canvas{position:absolute;top:0;left:0;width:100%;height:100%}
+  .scan-overlay{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:200px;height:200px;border:3px solid var(--green);border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,0.5)}
+  .status{text-align:center;padding:16px;font-size:14px;border-radius:var(--radius);margin-top:16px}
+  .status.success{background:#f0fdf4;color:var(--green)}
+  .status.error{background:#fef2f2;color:var(--error)}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+  .form-group{margin-bottom:16px}
+  .form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+  .form-group input,.form-group select{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:14px}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:12px;text-align:left;border-bottom:1px solid var(--border);font-size:13px}
+  th{font-weight:600;color:var(--muted);background:var(--surface)}
+  .badge{padding:4px 10px;border-radius:20px;font-size:12px;font-weight:500}
+  .badge.hadir{background:#f0fdf4;color:var(--green)}
+  .badge.sakit{background:#fef3c7;color:#d97706}
+  .badge.alfa{background:#fef2f2;color:var(--error)}
+  @media(max-width:768px){.sidebar{display:none}.main{padding:80px 16px 16px 16px}.topbar{left:0}}
+  .mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--border);padding:8px;justify-content:space-around;z-index:20}
+  @media(max-width:768px){.mobile-nav{display:flex}}
+  .mobile-nav a{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--muted);text-decoration:none}
+  .mobile-nav a.active{color:var(--navy)}
+  .mobile-nav .material-symbols-outlined{font-size:24px}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="#1da462"/><path d="M12 22L2 17v-5l10-5 10 5v5l-10 5z" fill="#158a50"/><path d="M12 7l-6 3v4l6 3 6-3v-4l-6-3z" fill="#fff"/></svg>
+    <span>FazaCloud</span>
+  </div>
+  <nav>
+    <a href="index.html" class="nav-item"><span class="material-symbols-outlined">dashboard</span> Beranda</a>
+    <a href="absensi.html" class="nav-item active"><span class="material-symbols-outlined">qr_code_scanner</span> Absensi QR</a>
+    <a href="jurnal.html" class="nav-item"><span class="material-symbols-outlined">menu_book</span> Jurnal Mengajar</a>
+    <a href="ceklok.html" class="nav-item"><span class="material-symbols-outlined">how_to_reg</span> Ceklok</a>
+  </nav>
+  <div style="margin-top:auto">
+    <a href="../../jurnal/login.html" class="nav-item"><span class="material-symbols-outlined">logout</span> Keluar</a>
+  </div>
+</aside>
+<header class="topbar">
+  <div class="topbar-title">Absensi QR Siswa</div>
+  <div class="topbar-user">
+    <div class="avatar" id="userAvatar">G</div>
+    <span id="userName">Guru</span>
+    <button class="btn-logout" onclick="logout()">logout</button>
+  </div>
+</header>
+<main class="main">
+  <div class="card">
+    <div class="card-title"><span class="material-symbols-outlined">qr_code_scanner</span> Scan QR Siswa</div>
+    <div id="video-container">
+      <video id="video" autoplay playsinline></video>
+      <canvas id="canvas"></canvas>
+      <div class="scan-overlay"></div>
+    </div>
+    <div id="scanStatus" class="status" style="display:none"></div>
+    <button class="btn btn-green" onclick="startScan()" style="margin-top:16px;width:100%">Mulai Scan</button>
+    <button class="btn" onclick="stopScan()" style="margin-top:8px;width:100%">Stop Kamera</button>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="material-symbols-outlined">edit_note</span> Input Manual</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Pilih Siswa</label>
+        <select id="siswaSelect"><option value="">— Pilih Siswa —</option></select>
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="statusAbsen"><option value="hadir">Hadir</option><option value="sakit">Sakit</option><option value="izin">Izin</option><option value="alfa">Alfa</option></select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Keterangan</label>
+      <input type="text" id="keterangan" placeholder="Opsional">
+    </div>
+    <button class="btn" onclick="simpanManual()">Simpan Absensi</button>
+  </div>
+  <div class="card">
+    <div class="card-title"><span class="material-symbols-outlined">list_alt</span> Absensi Hari Ini</div>
+    <table>
+      <thead><tr><th>Nama</th><th>Kelas</th><th>Datang</th><th>Pulang</th><th>Status</th></tr></thead>
+      <tbody id="absensiList"></tbody>
+    </table>
+  </div>
+</main>
+<nav class="mobile-nav">
+  <a href="index.html"><span class="material-symbols-outlined">dashboard</span>Beranda</a>
+  <a href="absensi.html" class="active"><span class="material-symbols-outlined">qr_code_scanner</span>Absensi</a>
+  <a href="jurnal.html"><span class="material-symbols-outlined">menu_book</span>Jurnal</a>
+  <a href="ceklok.html"><span class="material-symbols-outlined">how_to_reg</span>Ceklok</a>
+</nav>
+<script>
+var BASE = location.pathname.match(/^\/t\/([a-z0-9-]+)/) ? '/t/'+location.pathname.match(/^\/t\/([a-z0-9-]+)/)[1] : '';
+var TOKEN = sessionStorage.getItem('jurnal_token');
+var ROLE = sessionStorage.getItem('jurnal_role');
+var USER_ID = sessionStorage.getItem('jurnal_id');
+var USER_NAME = sessionStorage.getItem('jurnal_nama') || 'Guru';
+if(!TOKEN||ROLE!=='guru'){location.href=BASE+'/jurnal/login.html';throw'';}
+document.getElementById('userName').textContent=USER_NAME;
+document.getElementById('userAvatar').textContent=USER_NAME.charAt(0).toUpperCase();
+function auth(){return{Authorization:'Bearer '+TOKEN};}
+function logout(){sessionStorage.clear();location.href=BASE+'/jurnal/login.html';}
+function api(u){return BASE+u;}
+function fmt(t){return t?new Date(t).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}):'-';}
+function loadSiswa(){fetch(api('/api/jurnal/users/siswa'),{headers:auth()}).then(r=>r.json()).then(d=>{if(d.ok){var s=document.getElementById('siswaSelect');s.innerHTML='<option value="">— Pilih Siswa —</option>';d.data.forEach(x=>{s.innerHTML+='<option value="'+x.id+'">'+x.nama+' ('+x.kelas+')</option>'});}}).catch(()=>{});}
+function loadAbsensi(){var today=new Date().toISOString().split('T')[0];fetch(api('/api/jurnal/absensi/siswa?tanggal='+today),{headers:auth()}).then(r=>r.json()).then(d=>{if(d.ok){var html='';d.data.forEach(x=>{html+='<tr><td>'+x.siswa_nama+'</td><td>'+(x.kelas||'-')+'</td><td>'+fmt(x.jam_datang)+'</td><td>'+fmt(x.jam_pulang)+'</td><td><span class="badge '+(x.jenis==='hadir'?'hadir':x.jenis==='sakit'?'sakit':'alfa')+'">'+x.jenis+'</span></td></tr>';});document.getElementById('absensiList').innerHTML=html||'<tr><td colspan="5" style="text-align:center;color:var(--muted)">Belum ada absensi hari ini</td></tr>';}}).catch(()=>{});}
+loadSiswa();loadAbsensi();
+var video=document.getElementById('video'),canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d'),stream=null,scanning=false;
+function startScan(){navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(s=>{stream=s;video.srcObject=s;video.play();scanning=true;requestAnimationFrame(tick);}).catch(e=>showStatus('Gagal akses kamera','error'));}
+function stopScan(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}scanning=false;}
+function tick(){if(!scanning)return;if(video.readyState===video.HAVE_ENOUGH_DATA){canvas.width=video.videoWidth;canvas.height=video.videoHeight;ctx.drawImage(video,0,0,canvas.width,canvas.height);var i=ctx.getImageData(0,0,canvas.width,canvas.height);var code=jsQR(i.data,i.width,i.height);if(code){scanQR(code.data);stopScan();}}requestAnimationFrame(tick);}
+function scanQR(token){fetch(api('/api/jurnal/absensi/scan'),{method:'POST',headers:{...auth(),'Content-Type':'application/json'},body:JSON.stringify({qr_token:token})}).then(r=>r.json()).then(d=>{if(d.ok){showStatus('Absensi berhasil: '+d.data.siswa_nama,'success');loadAbsensi();}else{showStatus(d.error||'Gagal','error');}}).catch(()=>showStatus('Error','error'));}
+function showStatus(msg,type){var el=document.getElementById('scanStatus');el.textContent=msg;el.className='status '+type;el.style.display='block';}
+function simpanManual(){var siswa=document.getElementById('siswaSelect').value,jenis=document.getElementById('statusAbsen').value,ket=document.getElementById('keterangan').value;if(!siswa)return alert('Pilih siswa');fetch(api('/api/jurnal/absensi/siswa'),{method:'POST',headers:{...auth(),'Content-Type':'application/json'},body:JSON.stringify({siswa_id:siswa,jenis:jenis,keterangan:ket})}).then(r=>r.json()).then(d=>{if(d.ok){alert('Berhasil');loadAbsensi();document.getElementById('keterangan').value='';}else{alert(d.error||'Gagal');}}).catch(()=>alert('Error'));}
+</script>
+</body>
+</html>

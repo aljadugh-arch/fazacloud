@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Kanteen — Kasir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+<style>
+:root{--navy:#05386b;--green:#1da462;--white:#fff;--surface:#f4f6fa;--border:#dde3ed;--text:#1a2a3a;--muted:#6b7a90;--error:#dc3545;--radius:12px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--surface);min-height:100vh}
+.header{background:var(--navy);padding:16px 20px;color:var(--white);display:flex;justify-content:space-between;align-items:center}
+.brand{display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px}
+.brand svg{width:28px;height:28px}
+.btn-logout{background:none;border:1px solid rgba(255,255,255,0.3);color:var(--white);padding:6px 16px;border-radius:var(--radius);font-size:13px}
+.main{padding:20px;max-width:480px;margin:0 auto}
+.card{background:var(--white);border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.card-title{font-size:14px;font-weight:600;color:var(--muted);margin-bottom:12px;text-transform:uppercase}
+.btn{width:100%;padding:14px;background:var(--green);color:var(--white);border:none;border-radius:var(--radius);font-size:16px;font-weight:700;cursor:pointer}
+.btn:disabled{opacity:.5}
+#video-container{width:100%;height:250px;background:#111;border-radius:var(--radius);overflow:hidden;position:relative;margin-bottom:12px}
+#video{width:100%;height:100%;object-fit:cover}
+#canvas{position:absolute;top:0;left:0;width:100%;height:100%}
+.scan-line{position:absolute;top:50%;left:10%;width:80%;height:3px;background:var(--green);box-shadow:0 0 10px var(--green);animation:scan 2s infinite}
+@keyframes scan{0%,100%{top:20%}50%{top:80%}}
+.siswa-info{background:var(--surface);padding:16px;border-radius:var(--radius);margin-bottom:16px}
+.siswa-info .nama{font-size:18px;font-weight:700;color:var(--navy)}
+.siswa-info .saldo{font-size:24px;font-weight:700;color:var(--green)}
+.produk-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.produk-item{background:var(--surface);padding:12px;border-radius:var(--radius);text-align:center;cursor:pointer;border:2px solid transparent}
+.produk-item:hover{border-color:var(--green)}
+.produk-item.selected{background:#dcfce7;border-color:var(--green)}
+.produk-item .harga{font-weight:700;color:var(--navy);font-size:14px}
+.produk-item .nama{font-size:11px;color:var(--muted);margin-top:4px}
+.keranjang{background:var(--surface);padding:16px;border-radius:var(--radius);margin-bottom:16px}
+.keranjang-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)}
+.keranjang-total{font-size:20px;font-weight:700;color:var(--navy);text-align:right;padding-top:12px}
+.total{font-size:28px;font-weight:800}
+.btn-bayar{background:var(--navy)}
+.btn-bayar:disabled{background:var(--muted)}
+.status{padding:12px;border-radius:var(--radius);text-align:center;margin-bottom:12px;font-weight:600}
+.status.succ{background:#dcfce7;color:#166534}
+.status.err{background:#fee2e2;color:#991b1b}
+</style>
+</head>
+<body>
+<header class="header">
+<div class="brand">
+<svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="#1da462"/><path d="M12 22L2 17v-5l10-5 10 5v5l-10 5z" fill="#158a50"/><path d="M12 7l-6 3v4l6 3 6-3v-4l-6-3z" fill="#fff"/></svg>
+E-Kanteen
+</div>
+<button class="btn-logout" onclick="logout()">Keluar</button>
+</header>
+<main class="main">
+<div id="scanSection">
+<div class="card">
+<div class="card-title">Scan QR Siswa</div>
+<div id="video-container">
+<video id="video" autoplay playsinline></video>
+<canvas id="canvas"></canvas>
+<div class="scan-line"></div>
+</div>
+<button class="btn" onclick="startScan()">Mulai Kamera</button>
+<button class="btn" style="background:var(--muted);margin-top:8px" onclick="stopScan()">Stop</button>
+</div>
+</div>
+<div id="transaksiSection" style="display:none">
+<div class="siswa-info">
+<div class="nama" id="siswaNama">-</div>
+<div class="saldo" id="siswaSaldo">Rp0</div>
+</div>
+<div class="card">
+<div class="card-title">Pilih Produk</div>
+<div class="produk-grid" id="produkGrid"></div>
+</div>
+<div class="card">
+<div class="card-title">Keranjang</div>
+<div class="keranjang" id="keranjang"></div>
+<div class="keranjang-total"><span class="total" id="totalBayar">Rp0</span></div>
+<button class="btn btn-bayar" id="btnBayar" onclick="bayar()">BAYAR</button>
+</div>
+<div class="card">
+<div class="card-title">Riwayat Hari Ini</div>
+<div id="riwayat"></div>
+</div>
+<button class="btn" style="background:var(--muted)" onclick="reset()">Scan Siswa Baru</button>
+</div>
+<div id="statusMsg" style="display:none"></div>
+</main>
+<script>
+var BASE=location.pathname.match(/^\/t\/([a-z0-9-]+)/)?'/t/'+location.pathname.match(/^\/t\/([a-z0-9-]+)/)[1]:'';
+var TOKEN=sessionStorage.getItem('jurnal_token');
+var ROLE=sessionStorage.getItem('jurnal_role');
+var USER_ID=sessionStorage.getItem('jurnal_id');
+if(!TOKEN||ROLE!=='kasir'){location.href=BASE+'/jurnal/login.html';throw'';}
+function auth(){return{Authorization:'Bearer '+TOKEN};}
+function api(u){return BASE+u;}
+function logout(){sessionStorage.clear();location.href=BASE+'/jurnal/login.html';}
+function showStatus(msg,type){var el=document.getElementById('statusMsg');el.textContent=msg;el.className='status '+type;el.style.display='block';}
+var keranjang=[],siswaId=null,video=null,stream=null,scanning=false;
+function startScan(){navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(s=>{stream=s;video=document.getElementById('video');video.srcObject=s;video.play();scanning=true;requestAnimationFrame(tick);}).catch(e=>showStatus('Kamera error','err'));}
+function stopScan(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}scanning=false;}
+function tick(){if(!scanning)return;if(video.readyState===video.HAVE_ENOUGH_DATA){var c=document.getElementById('canvas');c.width=video.videoWidth;c.height=video.videoHeight;var x=c.getContext('2d');x.drawImage(video,0,0);var d=x.getImageData(0,0,c.width,c.height);var q=jsQR(d.data,d.width,d.height);if(q){scanQR(q.data);stopScan();}}requestAnimationFrame(tick);}
+function scanQR(token){fetch(api('/api/jurnal/kanteen/saldo/'+token),{headers:auth()}).then(r=>r.json()).then(d=>{if(d.ok){siswaId=d.data.siswa_id||token;document.getElementById('scanSection').style.display='none';document.getElementById('transaksiSection').style.display='block';document.getElementById('siswaNama').textContent=d.data.nama||token;document.getElementById('siswaSaldo').textContent='Rp'+(d.data.saldo||0).toLocaleString('id-ID');}else{showStatus('Siswa tidak ditemukan','err');}}).catch(()=>showStatus('Error','err'));}
+function loadProduk(){fetch(api('/api/jurnal/kanteen/produk'),{headers:auth()}).then(r=>r.json()).then(d=>{if(d.ok){var html='';d.data.forEach(p=>{if(p.aktif&&p.stok>0){html+='<div class="produk-item" onclick="tambah(\''+p.id+'\',\''+p.nama.replace(/'/g,"\\'")+'\','+p.harga+')"><div class="harga">Rp'+p.harga+'</div><div class="nama">'+p.nama+'</div></div>';}});document.getElementById('produkGrid').innerHTML=html;}}).catch(()=>{});}
+function tambah(id,nama,harga){keranjang.push({id,nama,harga});renderKeranjang();}
+function renderKeranjang(){var html='';var total=0;keranjang.forEach((i,n)=>{total+=i.harga;html+='<div class="keranjang-item"><span>'+i.nama+'</span><span>Rp'+i.harga.toLocaleString('id-ID')+' <b onclick="hapus('+n+')" style="color:red;cursor:pointer">×</b></span></div>';});document.getElementById('keranjang').innerHTML=html||'<div style="color:var(--muted);text-align:center">Keranjang kosong</div>';document.getElementById('totalBayar').textContent='Rp'+total.toLocaleString('id-ID');document.getElementById('btnBayar').disabled=keranjang.length===0;}
+function hapus(n){keranjang.splice(n,1);renderKeranjang();}
+function reset(){keranjang=[];siswaId=null;renderKeranjang();document.getElementById('transaksiSection').style.display='none';document.getElementById('scanSection').style.display='block';loadRiwayat();}
+function bayar(){if(!siswaId||keranjang.length===0)return;var total=keranjang.reduce((a,b)=>a+b.harga,0);fetch(api('/api/jurnal/kanteen/transaksi'),{method:'POST',headers:{...auth(),'Content-Type':'application/json'},body:JSON.stringify({siswa_id:siswaId,items:keranjang})}).then(r=>r.json()).then(d=>{if(d.ok){showStatus('Pembayaran berhasil!','succ');reset();}else{showStatus(d.error||'Gagal','err');}}).catch(()=>showStatus('Error','err'));}
+function loadRiwayat(){var today=new Date().toISOString().split('T')[0];fetch(api('/api/jurnal/kanteen/transaksi?tanggal='+today),{headers:auth()}).then(r=>r.json()).then(d=>{if(d.ok){var html='';d.data.slice(0,10).forEach(t=>{html+='<div style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between"><span>'+t.siswa_nama+'</span><span>Rp'+t.total.toLocaleString('id-ID')+'</span></div>';});document.getElementById('riwayat').innerHTML=html||'<div style="color:var(--muted)">Belum ada transaksi</div>';}}).catch(()=>{});}
+loadProduk();loadRiwayat();
+</script>
+</body>
+</html>

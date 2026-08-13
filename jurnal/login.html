@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Jurnal — FazaCloud</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #05386b;
+    --navy-light: #0a5298;
+    --green: #1da462;
+    --green-dark: #158a50;
+    --white: #fff;
+    --surface: #f4f6fa;
+    --border: #dde3ed;
+    --text: #1a2a3a;
+    --muted: #6b7a90;
+    --error: #dc3545;
+    --radius: 12px;
+  }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(140deg, var(--navy) 0%, #0a5298 60%, #1da462 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+  }
+  .card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--white);
+    border-radius: 20px;
+    padding: 40px 36px 36px;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.22);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+  .brand-icon {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, #e8f5e9, #f0fdf4);
+    border: 1.5px solid rgba(29,164,98,0.3);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .brand-icon svg { width: 24px; height: 24px; }
+  .brand-name { font-size: 20px; font-weight: 800; color: var(--navy); letter-spacing: -0.5px; }
+  .brand-name span { color: var(--green); }
+  .subtitle { text-align: center; color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+  .school-name { text-align: center; font-weight: 600; color: var(--navy); font-size: 15px; margin-bottom: 4px; }
+  h1 { text-align: center; font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 24px; }
+  .form-group { margin-bottom: 16px; }
+  label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  input, select {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text);
+    background: var(--white);
+    transition: border-color 0.15s;
+    outline: none;
+  }
+  input:focus, select:focus { border-color: var(--navy); }
+  .input-wrap { position: relative; }
+  .input-wrap input { padding-right: 44px; }
+  .toggle-pw {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer; color: var(--muted);
+    font-family: 'Material Symbols Outlined'; font-size: 20px; line-height: 1;
+    padding: 0;
+  }
+  .btn {
+    width: 100%;
+    padding: 13px;
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius);
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    margin-top: 8px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn:hover { background: var(--navy-light); }
+  .btn:active { transform: scale(0.98); }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .alert {
+    display: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  .alert.error { display: flex; background: #fef2f2; color: var(--error); border: 1px solid #fecaca; gap: 8px; align-items: center; }
+  .role-badges {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; justify-content: center;
+  }
+  .role-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    background: #f0f4ff;
+    color: var(--navy);
+    border: 1px solid #c7d4f0;
+  }
+  .back-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .back-link a { color: var(--navy); font-weight: 500; text-decoration: none; }
+  .back-link a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="brand">
+    <div class="brand-icon">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 8C6 5.79 7.79 4 10 4H14C16.21 4 18 5.79 18 8V9C19.1 9 20 9.9 20 11V16C20 17.1 19.1 18 18 18H6C4.9 18 4 17.1 4 16V11C4 9.9 4.9 9 6 9V8Z" fill="#05386b" opacity="0.15"/>
+        <path d="M12 2C9.24 2 7 4.24 7 7V9H5C3.9 9 3 9.9 3 11V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V11C21 9.9 20.1 9 19 9H17V7C17 4.24 14.76 2 12 2ZM12 4C13.66 4 15 5.34 15 7V9H9V7C9 5.34 10.34 4 12 4Z" fill="#05386b"/>
+        <path d="M12 14L13.5 12L15 14H13.5V16.5H10.5V14H12Z" fill="#1da462"/>
+      </svg>
+    </div>
+    <span class="brand-name">Faza<span>Cloud</span></span>
+  </div>
+  <div id="schoolName" class="school-name"></div>
+  <div class="subtitle">Portal Jurnal Sekolah</div>
+  <div class="role-badges">
+    <span class="role-badge">Guru</span>
+    <span class="role-badge">Siswa</span>
+    <span class="role-badge">Wali</span>
+    <span class="role-badge">Kasir</span>
+  </div>
+  <div id="alertLogin" class="alert"></div>
+  <form id="formLogin" autocomplete="off">
+    <div class="form-group">
+      <label for="role">Masuk Sebagai</label>
+      <select id="role" required>
+        <option value="">— Pilih Role —</option>
+        <option value="admin">Admin</option>
+        <option value="guru">Guru</option>
+        <option value="siswa">Siswa</option>
+        <option value="wali">Wali Murid</option>
+        <option value="kasir">Kasir Kanteen</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="nama@sekolah.sch.id" required autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label for="sandi">Kata Sandi</label>
+      <div class="input-wrap">
+        <input type="password" id="sandi" placeholder="••••••••" required autocomplete="current-password">
+        <button type="button" class="toggle-pw" id="togglePw" aria-label="Tampilkan/sembunyikan kata sandi">visibility</button>
+      </div>
+    </div>
+    <button type="submit" class="btn" id="btnLogin">
+      <span class="material-symbols-outlined" style="font-size:18px">login</span>
+      Masuk
+    </button>
+  </form>
+  <div class="back-link">
+    <a href="../index.html">← Kembali ke situs sekolah</a>
+  </div>
+</div>
+<script>
+  // Tenant-aware helper
+  function apiBase() {
+    var m = location.pathname.match(/^\/t\/([a-z0-9-]+)/);
+    return m ? '/t/' + m[1] : '';
+  }
+
+  // Load nama sekolah
+  fetch(apiBase() + '/api/identitas')
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.ok && d.data) {
+        document.getElementById('schoolName').textContent = d.data.namaSekolah || '';
+      }
+    }).catch(function(){});
+
+  // Toggle password
+  document.getElementById('togglePw').addEventListener('click', function() {
+    var inp = document.getElementById('sandi');
+    var isText = inp.type === 'text';
+    inp.type = isText ? 'password' : 'text';
+    this.textContent = isText ? 'visibility' : 'visibility_off';
+  });
+
+  // Form submit
+  document.getElementById('formLogin').addEventListener('submit', function(e) {
+    e.preventDefault();
+    var alert = document.getElementById('alertLogin');
+    alert.className = 'alert';
+    var role = document.getElementById('role').value;
+    var email = document.getElementById('email').value.trim();
+    var sandi = document.getElementById('sandi').value;
+    var btn = document.getElementById('btnLogin');
+
+    if (!role) {
+      alert.className = 'alert error';
+      alert.innerHTML = '<span class="material-symbols-outlined">error</span> Pilih role terlebih dahulu.';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Memproses…';
+
+    fetch(apiBase() + '/api/jurnal/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, password: sandi, role: role })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.ok) {
+        sessionStorage.setItem('jurnal_token', d.token);
+        sessionStorage.setItem('jurnal_role', d.role);
+        sessionStorage.setItem('jurnal_id', d.id);
+        sessionStorage.setItem('jurnal_nama', d.nama);
+        sessionStorage.setItem('jurnal_slug', d.slug || '');
+        var base = apiBase();
+        var redirects = {
+          admin: base + '/jurnal/admin/index.html',
+          guru:  base + '/jurnal/guru/index.html',
+          siswa: base + '/jurnal/siswa/index.html',
+          wali:  base + '/jurnal/wali/index.html',
+          kasir: base + '/jurnal/kanteen/index.html'
+        };
+        location.href = redirects[d.role] || base + '/jurnal/login.html';
+      } else {
+        alert.className = 'alert error';
+        alert.innerHTML = '<span class="material-symbols-outlined">error</span> ' + (d.error || 'Login gagal.');
+        btn.disabled = false;
+        btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px">login</span> Masuk';
+      }
+    })
+    .catch(function() {
+      alert.className = 'alert error';
+      alert.innerHTML = '<span class="material-symbols-outlined">error</span> Gagal terhubung ke server.';
+      btn.disabled = false;
+      btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px">login</span> Masuk';
+    });
+  });
+</script>
+</body>
+</html>

@@ -189,7 +189,16 @@ function contentDb(slug) {
   return loadTenant(slug);
 }
 
-// ---------- API ----------
+// ---------- Jurnal module (lazy load supaya tidak error jika belum ada) ----------
+let jurnal = null;
+function getJurnal() {
+  if (jurnal) return jurnal;
+  try {
+    jurnal = require('./jurnal-server');
+  } catch(e) { jurnal = null; }
+  return jurnal;
+}
+
 async function handleApi(req, res, url) {
   const route = url.pathname;
   const method = req.method;
@@ -201,6 +210,17 @@ async function handleApi(req, res, url) {
 
   const cdb = contentDb(slug);
   if (slug && !cdb) return send(res, 404, { ok: false, error: "Tenant tidak ditemukan" });
+
+  // ---- JURNAL module ----
+  if (cleanRoute.startsWith('/api/jurnal/') || cleanRoute === '/api/jurnal/login') {
+    const j = getJurnal();
+    if (!j) return send(res, 503, { ok: false, error: 'Modul jurnal belum tersedia.' });
+    const tdb = contentDb(slug);
+    j.initJurnalData(tdb);
+    return j.handleJurnal(req, res, url, slug, tdb, (s, d) => {
+      if (s) saveTenant(s, d); else saveData();
+    });
+  }
 
   // ---- LOGIN (tenant-aware) ----
   if (cleanRoute === "/api/login" && method === "POST") {

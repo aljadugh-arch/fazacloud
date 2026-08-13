@@ -77,5 +77,97 @@
     "email": "admin@smanusantara.sch.id",
     "password": "488694d6971b14185b592335cbf84387a1abf786be20f3606053d244e28e62c6"
   },
-  "tenants": []
+  "tenants": [],
+  "users": {
+    "guru": [
+      {
+        "id": "GRU-DEMO",
+        "nama": "Guru Demo",
+        "nip": "-",
+        "email": "guru@demo.sch.id",
+        "password": "55906c970588cfc07143cca35e73bd96c43f97fef391eebfe03b9c68c2b787e5",
+        "mapel": [
+          "Matematika"
+        ],
+        "aktif": true
+      }
+    ],
+    "siswa": [
+      {
+        "id": "SIS-DEMO",
+        "nama": "Siswa Demo",
+        "nis": "001",
+        "kelas": "X-A",
+        "jurusan": "",
+        "email": "siswa@demo.sch.id",
+        "password": "f646613bd8bddb5fc959010672da84ae23f569933254c4bc810471b97c698082",
+        "qr_token": "SIS-DEMO-QR",
+        "wali_id": "WLI-DEMO",
+        "saldo_kanteen": 50000,
+        "aktif": true
+      }
+    ],
+    "wali": [
+      {
+        "id": "WLI-DEMO",
+        "nama": "Wali Demo",
+        "email": "wali@demo.sch.id",
+        "password": "67231a51ebc7126d8ee19a2d8ab772b005ab1554103f5daa0e625505b7bcd4d8",
+        "siswa_ids": [
+          "SIS-DEMO"
+        ]
+      }
+    ],
+    "kasir": [
+      {
+        "id": "KSR-DEMO",
+        "nama": "Kasir Demo",
+        "email": "kasir@demo.sch.id",
+        "password": "0049a0cba02ae3a235fb97b31d490e6fc495e9e15a210b121f57fb9af2ec2e06"
+      }
+    ],
+    "admin": []
+  },
+  "kelas": [
+    {
+      "id": "KLS-DEMO",
+      "nama": "X-A",
+      "tingkat": "X",
+      "jurusan": "",
+      "wali_kelas_id": "GRU-DEMO"
+    }
+  ],
+  "jadwal": [
+    {
+      "id": "JDW-DEMO",
+      "kelas_id": "KLS-DEMO",
+      "hari": "Senin",
+      "jam_ke": 1,
+      "jam_mulai": "07:00",
+      "jam_selesai": "08:30",
+      "mapel": "Matematika",
+      "guru_id": "GRU-DEMO",
+      "ruang": "R1"
+    }
+  ],
+  "absensi_siswa": [],
+  "absensi_ekskul": [],
+  "absensi_jamaah": [],
+  "absensi_kegiatan": [],
+  "ceklok_guru": [],
+  "jurnal_mengajar": [],
+  "penilaian": [],
+  "tagihan": [],
+  "tabungan": [],
+  "produk_kanteen": [
+    {
+      "id": "PRD-DEMO",
+      "nama": "Nasi Goreng",
+      "harga": 10000,
+      "stok": 50,
+      "kategori": "Makanan",
+      "aktif": true
+    }
+  ],
+  "transaksi_kanteen": []
 }

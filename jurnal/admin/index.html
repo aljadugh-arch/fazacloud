@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Jurnal Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #05386b;
+      --navy-light: #0a4d96;
+      --navy-dark: #032a52;
+      --gold: #f0a500;
+      --bg: #f4f6f9;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text: #1a202c;
+      --text-muted: #64748b;
+      --danger: #e53e3e;
+      --success: #38a169;
+      --warning: #d69e2e;
+      --sidebar-w: 240px;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed; top: 0; left: 0; width: var(--sidebar-w);
+      height: 100vh; background: var(--navy); color: #fff;
+      display: flex; flex-direction: column; z-index: 200;
+      transition: transform .25s ease;
+    }
+    .sidebar-brand {
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .sidebar-brand .badge {
+      width: 36px; height: 36px; background: var(--gold);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 13px; color: var(--navy); flex-shrink: 0;
+    }
+    .sidebar-brand .brand-text { font-size: 13px; line-height: 1.3; }
+    .sidebar-brand .brand-text strong { display: block; font-size: 14px; }
+    .sidebar-nav { flex: 1; overflow-y: auto; padding: 12px 0; }
+    .nav-section { padding: 8px 16px 4px; font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .08em; color: rgba(255,255,255,.45); }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 16px; font-size: 14px; color: rgba(255,255,255,.8);
+      text-decoration: none; border-radius: 0; transition: background .15s;
+      cursor: pointer;
+    }
+    .nav-item:hover { background: rgba(255,255,255,.08); color: #fff; }
+    .nav-item.active { background: rgba(255,255,255,.15); color: #fff; font-weight: 600; }
+    .nav-item .material-symbols-outlined { font-size: 20px; opacity: .85; }
+    .sidebar-footer {
+      padding: 16px; border-top: 1px solid rgba(255,255,255,.12);
+      font-size: 12px; color: rgba(255,255,255,.5);
+    }
+    .sidebar-footer .user-name { color: rgba(255,255,255,.85); font-weight: 600; font-size: 13px; }
+    .btn-logout {
+      margin-top: 8px; display: flex; align-items: center; gap: 6px;
+      color: rgba(255,255,255,.6); background: none; border: none;
+      font-size: 13px; cursor: pointer; font-family: inherit;
+    }
+    .btn-logout:hover { color: #fff; }
+
+    /* Topbar */
+    .topbar {
+      position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: 60px;
+      background: var(--navy); color: #fff;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; z-index: 100; box-shadow: 0 1px 4px rgba(0,0,0,.2);
+    }
+    .topbar-title { font-size: 16px; font-weight: 600; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .btn-menu {
+      display: none; background: none; border: none; color: #fff; cursor: pointer;
+      padding: 4px;
+    }
+    .btn-menu .material-symbols-outlined { font-size: 24px; }
+
+    /* Main content */
+    .main { margin-left: var(--sidebar-w); padding-top: 60px; }
+    .page { padding: 28px 24px; }
+
+    /* Stat grid */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px; margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--surface); border-radius: 12px;
+      padding: 20px; display: flex; align-items: center; gap: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.07);
+    }
+    .stat-card .icon {
+      width: 48px; height: 48px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .stat-card .icon .material-symbols-outlined { font-size: 24px; }
+    .stat-card .num { font-size: 26px; font-weight: 700; line-height: 1; }
+    .stat-card .lbl { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+    /* Panel */
+    .panel {
+      background: var(--surface); border-radius: 12px;
+      padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,.07);
+      margin-bottom: 20px;
+    }
+    .panel-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .panel-head h2 { font-size: 15px; font-weight: 600; }
+
+    /* Quick actions */
+    .quick-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px;
+    }
+    .quick-card {
+      background: var(--bg); border-radius: 10px; padding: 16px;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      text-decoration: none; color: var(--text); transition: background .15s, transform .15s;
+      border: 1px solid var(--border);
+    }
+    .quick-card:hover { background: #e8eef5; transform: translateY(-2px); }
+    .quick-card .material-symbols-outlined { font-size: 28px; color: var(--navy); }
+    .quick-card span.label { font-size: 13px; font-weight: 500; text-align: center; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500;
+      border: none; cursor: pointer; font-family: inherit; text-decoration: none;
+      transition: opacity .15s;
+    }
+    .btn:hover { opacity: .88; }
+    .btn-navy { background: var(--navy); color: #fff; }
+    .btn-sm { padding: 5px 12px; font-size: 12px; }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center; padding: 40px 20px; color: var(--text-muted);
+    }
+    .empty-state .material-symbols-outlined { font-size: 40px; display: block; margin-bottom: 8px; }
+
+    /* Loading */
+    .loading { text-align: center; padding: 32px; color: var(--text-muted); font-size: 14px; }
+
+    /* Toast */
+    #toast {
+      position: fixed; bottom: 24px; right: 24px; background: #1a202c;
+      color: #fff; padding: 12px 18px; border-radius: 8px; font-size: 13px;
+      z-index: 999; opacity: 0; transform: translateY(8px);
+      transition: opacity .25s, transform .25s; pointer-events: none;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+
+    /* Overlay */
+    .sidebar-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 190;
+    }
+    .sidebar-overlay.show { display: block; }
+
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .topbar { left: 0; }
+      .main { margin-left: 0; }
+      .btn-menu { display: flex; }
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 480px) {
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+      .quick-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="sidebar-overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="badge">JR</div>
+    <div class="brand-text"><strong>Jurnal Admin</strong>FazaCloud</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Utama</div>
+    <a class="nav-item active" href="index.html">
+      <span class="material-symbols-outlined">dashboard</span> Dashboard
+    </a>
+    <div class="nav-section">Manajemen</div>
+    <a class="nav-item" href="users.html">
+      <span class="material-symbols-outlined">manage_accounts</span> Pengguna
+    </a>
+    <a class="nav-item" href="keuangan.html">
+      <span class="material-symbols-outlined">account_balance_wallet</span> Keuangan
+    </a>
+    <a class="nav-item" href="penilaian.html">
+      <span class="material-symbols-outlined">grading</span> Penilaian
+    </a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-name" id="sidebarUser">Admin</div>
+    <div>Administrator Jurnal</div>
+    <button class="btn-logout" onclick="doLogout()">
+      <span class="material-symbols-outlined" style="font-size:16px">logout</span> Keluar
+    </button>
+  </div>
+</aside>
+
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:12px">
+    <button class="btn-menu" onclick="toggleSidebar()">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+    <span class="topbar-title">Dashboard</span>
+  </div>
+  <div class="topbar-right">
+    <span style="font-size:13px;opacity:.8" id="topbarDate"></span>
+  </div>
+</div>
+
+<main class="main">
+  <div class="page">
+
+    <div class="stat-grid" id="statGrid">
+      <div class="loading">Memuat statistik…</div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Menu Cepat</h2>
+      </div>
+      <div class="quick-grid">
+        <a class="quick-card" href="users.html">
+          <span class="material-symbols-outlined">school</span>
+          <span class="label">Data Siswa</span>
+        </a>
+        <a class="quick-card" href="users.html#guru">
+          <span class="material-symbols-outlined">person_book</span>
+          <span class="label">Data Guru</span>
+        </a>
+        <a class="quick-card" href="keuangan.html">
+          <span class="material-symbols-outlined">receipt_long</span>
+          <span class="label">Tagihan</span>
+        </a>
+        <a class="quick-card" href="keuangan.html#tabungan">
+          <span class="material-symbols-outlined">savings</span>
+          <span class="label">Tabungan</span>
+        </a>
+        <a class="quick-card" href="penilaian.html">
+          <span class="material-symbols-outlined">grading</span>
+          <span class="label">Penilaian</span>
+        </a>
+        <a class="quick-card" href="users.html#kasir">
+          <span class="material-symbols-outlined">point_of_sale</span>
+          <span class="label">Kasir</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="panel" id="panelAbsensi">
+      <div class="panel-head">
+        <h2>Ringkasan Hari Ini</h2>
+        <span style="font-size:12px;color:var(--text-muted)" id="tanggalHariIni"></span>
+      </div>
+      <div id="absensiContent"><div class="loading">Memuat…</div></div>
+    </div>
+
+  </div>
+</main>
+
+<div id="toast"></div>
+
+<script>
+(function () {
+  /* ── Auth guard ── */
+  var token = sessionStorage.getItem('jurnal_token');
+  var role  = sessionStorage.getItem('jurnal_role');
+  if (!token || role !== 'admin') {
+    location.replace('login.html');
+    return;
+  }
+
+  /* ── Helpers ── */
+  var TBASE = (location.pathname.match(/^\/t\/[a-z0-9-]+/) || [''])[0];
+  function api(path, opts) {
+    return fetch(TBASE + path, Object.assign({
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
+    }, opts)).then(function (r) { return r.json(); });
+  }
+  function toast(msg, ms) {
+    var el = document.getElementById('toast');
+    el.textContent = msg; el.classList.add('show');
+    setTimeout(function () { el.classList.remove('show'); }, ms || 3000);
+  }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]);}); }
+
+  /* ── UI chrome ── */
+  var now = new Date();
+  document.getElementById('topbarDate').textContent = now.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('tanggalHariIni').textContent = now.toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('sidebarUser').textContent = sessionStorage.getItem('jurnal_nama') || 'Admin';
+
+  /* ── Dashboard stats ── */
+  api('/api/jurnal/dashboard').then(function (d) {
+    var stats = [
+      { icon: 'school',               bg: '#ebf4ff', color: '#2b6cb0', num: d.total_siswa    || 0, lbl: 'Total Siswa' },
+      { icon: 'person_book',           bg: '#f0fff4', color: '#276749', num: d.total_guru     || 0, lbl: 'Total Guru' },
+      { icon: 'how_to_reg',            bg: '#fffbeb', color: '#b7791f', num: d.absensi_hari_ini || 0, lbl: 'Absensi Hari Ini' },
+      { icon: 'point_of_sale',         bg: '#faf5ff', color: '#6b46c1', num: d.transaksi_kanteen || 0, lbl: 'Transaksi Kanteen' },
+      { icon: 'receipt_long',          bg: '#fff5f5', color: '#c53030', num: d.tagihan_belum_lunas || 0, lbl: 'Tagihan Belum Lunas' },
+    ];
+    document.getElementById('statGrid').innerHTML = stats.map(function (s) {
+      return '<div class="stat-card">' +
+        '<div class="icon" style="background:' + s.bg + ';color:' + s.color + '">' +
+          '<span class="material-symbols-outlined">' + s.icon + '</span></div>' +
+        '<div><div class="num">' + s.num + '</div><div class="lbl">' + esc(s.lbl) + '</div></div>' +
+        '</div>';
+    }).join('');
+
+    /* Ringkasan absensi */
+    var rows = [];
+    if (d.absensi_detail && d.absensi_detail.length) {
+      rows = d.absensi_detail.map(function (a) {
+        return '<tr><td>' + esc(a.kelas||'-') + '</td><td>' + (a.hadir||0) + '</td><td>' + (a.sakit||0) + '</td><td>' + (a.izin||0) + '</td><td>' + (a.alfa||0) + '</td></tr>';
+      }).join('');
+    }
+    document.getElementById('absensiContent').innerHTML = rows
+      ? '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px">' +
+          '<thead><tr style="border-bottom:2px solid var(--border)"><th style="text-align:left;padding:8px">Kelas</th><th style="padding:8px">Hadir</th><th style="padding:8px">Sakit</th><th style="padding:8px">Izin</th><th style="padding:8px">Alfa</th></tr></thead>' +
+          '<tbody>' + rows + '</tbody></table></div>'
+      : '<div class="empty-state"><span class="material-symbols-outlined">event_busy</span><p>Data absensi hari ini belum tersedia.</p></div>';
+  }).catch(function (e) {
+    document.getElementById('statGrid').innerHTML = '<div style="color:var(--danger);padding:16px;font-size:13px">Gagal memuat dashboard: ' + esc(e.message) + '</div>';
+    document.getElementById('absensiContent').innerHTML = '';
+  });
+
+  /* ── Sidebar toggle ── */
+  window.toggleSidebar = function () {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('show');
+  };
+  window.closeSidebar = function () {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('overlay').classList.remove('show');
+  };
+  window.doLogout = function () {
+    sessionStorage.removeItem('jurnal_token');
+    sessionStorage.removeItem('jurnal_role');
+    sessionStorage.removeItem('jurnal_nama');
+    location.replace('login.html');
+  };
+})();
+</script>
+</body>
+</html>

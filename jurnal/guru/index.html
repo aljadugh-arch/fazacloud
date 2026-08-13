@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Guru – FazaCloud</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #05386b;
+      --navy-dark: #032a52;
+      --green: #1da462;
+      --green-dark: #178a50;
+      --sidebar-w: 240px;
+      --topbar-h: 60px;
+    }
+    body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #222; display: flex; min-height: 100vh; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: var(--sidebar-w); background: var(--navy); color: #fff;
+      display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; z-index: 200;
+      transition: transform .25s ease;
+    }
+    .sidebar-brand {
+      padding: 18px 20px; font-size: 1.15rem; font-weight: 700;
+      border-bottom: 1px solid rgba(255,255,255,.12); display: flex; align-items: center; gap: 10px;
+    }
+    .sidebar-brand span.logo { font-size: 1.4rem; }
+    .sidebar nav { flex: 1; padding: 12px 0; }
+    .sidebar nav a {
+      display: flex; align-items: center; gap: 12px; padding: 12px 20px;
+      color: rgba(255,255,255,.75); text-decoration: none; font-size: .95rem;
+      transition: background .2s, color .2s; border-left: 3px solid transparent;
+    }
+    .sidebar nav a:hover, .sidebar nav a.active {
+      background: rgba(255,255,255,.1); color: #fff; border-left-color: var(--green);
+    }
+    .sidebar nav a .icon { font-size: 1.1rem; width: 22px; text-align: center; }
+
+    /* ── Topbar ── */
+    .topbar {
+      position: fixed; top: 0; left: var(--sidebar-w); right: 0; height: var(--topbar-h);
+      background: #fff; border-bottom: 1px solid #dde3ea;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px; z-index: 100; gap: 12px;
+    }
+    .topbar .hamburger { display: none; background: none; border: none; font-size: 1.4rem; cursor: pointer; }
+    .topbar .title { font-weight: 600; font-size: 1.05rem; color: var(--navy); }
+    .topbar .user-info { display: flex; align-items: center; gap: 10px; }
+    .topbar .user-name { font-size: .9rem; color: #555; }
+    .topbar .btn-logout {
+      background: var(--navy); color: #fff; border: none; border-radius: 6px;
+      padding: 6px 14px; font-size: .85rem; cursor: pointer; transition: background .2s;
+    }
+    .topbar .btn-logout:hover { background: var(--navy-dark); }
+
+    /* ── Main ── */
+    .main { margin-left: var(--sidebar-w); margin-top: var(--topbar-h); flex: 1; padding: 28px 24px; width: 100%; }
+
+    /* ── Stats cards ── */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 18px; margin-bottom: 28px; }
+    .stat-card {
+      background: #fff; border-radius: 10px; padding: 20px; display: flex; flex-direction: column; gap: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06); border-top: 4px solid var(--green);
+    }
+    .stat-card.navy { border-top-color: var(--navy); }
+    .stat-card .label { font-size: .8rem; color: #666; text-transform: uppercase; letter-spacing: .5px; }
+    .stat-card .value { font-size: 2rem; font-weight: 700; color: var(--navy); line-height: 1; }
+    .stat-card .sub { font-size: .8rem; color: #888; }
+
+    /* ── Section ── */
+    .section { background: #fff; border-radius: 10px; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,.06); margin-bottom: 24px; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .section-title { font-size: 1rem; font-weight: 600; color: var(--navy); }
+    .btn-sm {
+      background: var(--green); color: #fff; border: none; border-radius: 6px;
+      padding: 6px 14px; font-size: .82rem; cursor: pointer; text-decoration: none;
+      transition: background .2s; display: inline-block;
+    }
+    .btn-sm:hover { background: var(--green-dark); }
+
+    /* ── Table ── */
+    table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    thead th { background: #f5f7fa; color: #555; text-align: left; padding: 9px 12px; font-weight: 600; border-bottom: 1px solid #e8ecf0; }
+    tbody td { padding: 9px 12px; border-bottom: 1px solid #f0f2f5; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: #f8fafc; }
+
+    /* ── Badge ── */
+    .badge {
+      display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: .75rem; font-weight: 600;
+    }
+    .badge-green { background: #d4f5e5; color: #0f7a43; }
+    .badge-orange { background: #fff3cd; color: #856404; }
+    .badge-red { background: #fde8e8; color: #b91c1c; }
+
+    /* ── Loading / empty ── */
+    .loading { text-align: center; color: #aaa; padding: 24px; font-size: .9rem; }
+
+    /* ── Overlay ── */
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 150; }
+    .overlay.show { display: block; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .topbar { left: 0; }
+      .main { margin-left: 0; padding: 18px 14px; }
+      .topbar .hamburger { display: block; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="overlay" id="overlay"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand"><span class="logo">🏫</span> FazaCloud</div>
+  <nav>
+    <a href="index.html" class="active"><span class="icon">🏠</span> Beranda</a>
+    <a href="absensi.html"><span class="icon">✅</span> Absensi</a>
+    <a href="jurnal.html"><span class="icon">📓</span> Jurnal Mengajar</a>
+    <a href="ceklok.html"><span class="icon">🕐</span> Ceklok</a>
+  </nav>
+</aside>
+
+<!-- Topbar -->
+<header class="topbar">
+  <button class="hamburger" id="hamburger" aria-label="Menu">☰</button>
+  <span class="title">Dashboard Guru</span>
+  <div class="user-info">
+    <span class="user-name" id="namaGuru">–</span>
+    <button class="btn-logout" id="btnLogout">Logout</button>
+  </div>
+</header>
+
+<!-- Main -->
+<main class="main">
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="label">Jadwal Hari Ini</div>
+      <div class="value" id="statJadwal">–</div>
+      <div class="sub">kelas / sesi</div>
+    </div>
+    <div class="stat-card navy">
+      <div class="label">Absensi Belum Diisi</div>
+      <div class="value" id="statAbsensi">–</div>
+      <div class="sub">kelas perlu diisi</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Jurnal Mengajar</div>
+      <div class="value" id="statJurnal">–</div>
+      <div class="sub">entri bulan ini</div>
+    </div>
+  </div>
+
+  <!-- Jadwal Hari Ini -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">📅 Jadwal Hari Ini</span>
+      <a href="absensi.html" class="btn-sm">+ Isi Absensi</a>
+    </div>
+    <div id="jadwalContainer"><div class="loading">Memuat jadwal…</div></div>
+  </div>
+
+  <!-- Absensi Belum Diisi -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">⚠️ Absensi Belum Diisi</span>
+      <a href="absensi.html" class="btn-sm">Isi Sekarang</a>
+    </div>
+    <div id="absensiPending"><div class="loading">Memuat data…</div></div>
+  </div>
+
+  <!-- Jurnal Terbaru -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">📓 Jurnal Mengajar Terbaru</span>
+      <a href="jurnal.html" class="btn-sm">Lihat Semua</a>
+    </div>
+    <div id="jurnalContainer"><div class="loading">Memuat jurnal…</div></div>
+  </div>
+
+</main>
+
+<script>
+  /* ── Helpers ── */
+  function apiBase() {
+    const parts = window.location.pathname.split('/');
+    const tIdx = parts.indexOf('t');
+    return tIdx !== -1 ? '/t/' + parts[tIdx + 1] : '';
+  }
+  function authHeader() {
+    return { 'Authorization': 'Bearer ' + (sessionStorage.getItem('jurnal_token') || '') };
+  }
+  function logout() {
+    sessionStorage.clear();
+    window.location.href = '/jurnal/login.html';
+  }
+
+  /* ── Auth Guard ── */
+  (function() {
+    const token = sessionStorage.getItem('jurnal_token');
+    const role  = sessionStorage.getItem('jurnal_role');
+    if (!token || role !== 'guru') { logout(); }
+  })();
+
+  /* ── Init ── */
+  document.getElementById('namaGuru').textContent = sessionStorage.getItem('jurnal_nama') || 'Guru';
+  document.getElementById('btnLogout').addEventListener('click', logout);
+
+  /* ── Hamburger ── */
+  const sidebar  = document.getElementById('sidebar');
+  const overlay  = document.getElementById('overlay');
+  const hamburger = document.getElementById('hamburger');
+  function toggleSidebar() { sidebar.classList.toggle('open'); overlay.classList.toggle('show'); }
+  hamburger.addEventListener('click', toggleSidebar);
+  overlay.addEventListener('click', toggleSidebar);
+
+  const BASE = apiBase();
+  const today = new Date().toISOString().slice(0, 10);
+
+  /* ── Fetch Jadwal ── */
+  async function loadJadwal() {
+    try {
+      const res = await fetch(`${BASE}/api/jurnal/jadwal`, { headers: authHeader() });
+      if (!res.ok) throw new Error(res.status);
+      const data = await res.json();
+      const list = Array.isArray(data) ? data : (data.data || []);
+      document.getElementById('statJadwal').textContent = list.length;
+
+      if (!list.length) {
+        document.getElementById('jadwalContainer').innerHTML = '<div class="loading">Tidak ada jadwal hari ini.</div>';
+        return;
+      }
+      const rows = list.map(j => `
+        <tr>
+          <td>${j.jam_mulai || '–'} – ${j.jam_selesai || '–'}</td>
+          <td>${j.mata_pelajaran || j.mapel || '–'}</td>
+          <td>${j.kelas || '–'}</td>
+          <td>${j.ruangan || '–'}</td>
+          <td><span class="badge badge-green">Aktif</span></td>
+        </tr>`).join('');
+      document.getElementById('jadwalContainer').innerHTML = `
+        <table>
+          <thead><tr><th>Waktu</th><th>Mata Pelajaran</th><th>Kelas</th><th>Ruangan</th><th>Status</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>`;
+    } catch(e) {
+      document.getElementById('jadwalContainer').innerHTML = `<div class="loading">Gagal memuat jadwal.</div>`;
+    }
+  }
+
+  /* ── Fetch Absensi (cek yang belum diisi) ── */
+  async function loadAbsensiPending() {
+    try {
+      const res = await fetch(`${BASE}/api/jurnal/absensi/siswa?tanggal=${today}`, { headers: authHeader() });
+      if (!res.ok) throw new Error(res.status);
+      const data = await res.json();
+      const list = Array.isArray(data) ? data : (data.data || []);
+
+      // Kelas yang belum ada entry absensi sama sekali
+      const jadwalRes = await fetch(`${BASE}/api/jurnal/jadwal`, { headers: authHeader() });
+      const jadwalData = await jadwalRes.json();
+      const jadwal = Array.isArray(jadwalData) ? jadwalData : (jadwalData.data || []);
+
+      const kelasAbsen = new Set(list.map(a => a.kelas || a.kelas_id));
+      const pending = jadwal.filter(j => !kelasAbsen.has(j.kelas || j.kelas_id));
+      document.getElementById('statAbsensi').textContent = pending.length;
+
+      if (!pending.length) {
+        document.getElementById('absensiPending').innerHTML = '<div class="loading">✅ Semua absensi sudah diisi.</div>';
+        return;
+      }
+      const rows = pending.map(j => `
+        <tr>
+          <td>${j.kelas || '–'}</td>
+          <td>${j.mata_pelajaran || j.mapel || '–'}</td>
+          <td>${j.jam_mulai || '–'}</td>
+          <td><span class="badge badge-orange">Belum Diisi</span></td>
+          <td><a href="absensi.html" class="btn-sm">Isi</a></td>
+        </tr>`).join('');
+      document.getElementById('absensiPending').innerHTML = `
+        <table>
+          <thead><tr><th>Kelas</th><th>Mata Pelajaran</th><th>Jam</th><th>Status</th><th></th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>`;
+    } catch(e) {
+      document.getElementById('absensiPending').innerHTML = `<div class="loading">Gagal memuat data absensi.</div>`;
+    }
+  }
+
+  /* ── Fetch Jurnal ── */
+  async function loadJurnal() {
+    try {
+      const res = await fetch(`${BASE}/api/jurnal/jurnal-mengajar`, { headers: authHeader() });
+      if (!res.ok) throw new Error(res.status);
+      const data = await res.json();
+      const list = (Array.isArray(data) ? data : (data.data || [])).slice(0, 5);
+      document.getElementById('statJurnal').textContent = Array.isArray(data) ? data.length : (data.total || list.length);
+
+      if (!list.length) {
+        document.getElementById('jurnalContainer').innerHTML = '<div class="loading">Belum ada jurnal.</div>';
+        return;
+      }
+      const rows = list.map(j => `
+        <tr>
+          <td>${j.tanggal || '–'}</td>
+          <td>${j.kelas || '–'}</td>
+          <td>${j.mata_pelajaran || j.mapel || '–'}</td>
+          <td>${j.materi || '–'}</td>
+          <td>${j.metode || '–'}</td>
+        </tr>`).join('');
+      document.getElementById('jurnalContainer').innerHTML = `
+        <table>
+          <thead><tr><th>Tanggal</th><th>Kelas</th><th>Mata Pelajaran</th><th>Materi</th><th>Metode</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>`;
+    } catch(e) {
+      document.getElementById('jurnalContainer').innerHTML = `<div class="loading">Gagal memuat jurnal.</div>`;
+    }
+  }
+
+  loadJadwal();
+  loadAbsensiPending();
+  loadJurnal();
+</script>
+</body>
+</html>
