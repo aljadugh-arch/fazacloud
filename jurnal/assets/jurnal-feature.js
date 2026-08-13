@@ -3,7 +3,7 @@ const ROLE=sessionStorage.getItem('jurnal_role')||'';const TOKEN=sessionStorage.
 function api(p,opt){return fetch(BASE+p,Object.assign({headers:{Authorization:'Bearer '+TOKEN,'Content-Type':'application/json'}},opt)).then(r=>r.json())}
 function esc(s){return String(s??'').replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]))}
 function money(n){return 'Rp'+Number(n||0).toLocaleString('id-ID')}
-function cfg(){return CONFIG[KEY]||null}
+function cfg(){return CONFIG[KEY]||(window.JURNAL_ADV&&window.JURNAL_ADV[KEY])||null}
 const CONFIG={
 'admin/siswa.html':{t:'Data Siswa',d:'Master siswa untuk login, QR KTS, absensi, tagihan, tabungan, cashless.',e:'/api/jurnal/users/siswa',fields:[['nama','Nama'],['email','Email Login'],['password','Password'],['nis','NIS'],['kelas','Kelas'],['jurusan','Jurusan'],['wali_id','ID Wali']],cols:[['nama','Nama'],['nis','NIS'],['kelas','Kelas'],['email','Email'],['qr_token','QR Token'],['saldo_kanteen','Saldo',money]],tips:'Setiap siswa otomatis punya QR token untuk scan absensi dan cashless.'},
 'admin/gtk.html':{t:'Data GTK',d:'Guru/GTK untuk jadwal, jurnal mengajar, ceklok, penilaian.',e:'/api/jurnal/users/guru',fields:[['nama','Nama'],['email','Email Login'],['password','Password'],['nip','NIP'],['mapel','Mapel']],cols:[['nama','Nama'],['nip','NIP'],['mapel','Mapel'],['email','Email'],['aktif','Status']]},
