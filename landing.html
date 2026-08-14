@@ -139,6 +139,12 @@
     .fitur .ic .material-symbols-outlined { font-size: 26px; }
     .fitur h3 { font-size: 18px; font-weight: 700; color: var(--dk-navy); margin-bottom: 8px; }
     .fitur p { color: var(--dk-muted); font-size: 14px; line-height: 1.65; }
+    .apps-grid { display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); }
+    .app-card { display:flex; align-items:center; gap:14px; padding:18px; background:#fff; border:1px solid #e5e7eb; border-radius:16px; box-shadow:0 10px 24px rgba(15,23,42,.06); color:#1f2937; text-decoration:none; transition:.2s ease; }
+    .app-card:hover { transform:translateY(-4px); background:#f5f3ff; color:#4f46e5; box-shadow:0 20px 42px rgba(15,23,42,.12); }
+    .app-card .material-symbols-outlined { background:#eef2ff; color:#6366f1; border-radius:12px; padding:10px; }
+    .app-card strong { display:block; font-weight:800; margin-bottom:3px; }
+    .app-card small { display:block; color:#6b7280; line-height:1.4; }
 
     /* CARA KERJA (langkah) */
     .langkah { display: grid; gap: 20px; }
@@ -292,6 +298,23 @@
         <div class="fitur"><div class="ic" style="background:#f3e5f5;color:#7b1fa2"><span class="material-symbols-outlined">palette</span></div><h3>Tema &amp; Kustomisasi</h3><p>Pilih tema siap pakai atau atur warna, font, hero, dan footer sesuai identitas sekolah Anda.</p></div>
         <div class="fitur"><div class="ic" style="background:#e0f7fa;color:#00838f"><span class="material-symbols-outlined">cloud_upload</span></div><h3>Upload Gambar Mudah</h3><p>Unggah foto hero, artikel, guru, dan galeri langsung dari panel — lengkap panduan ukuran.</p></div>
         <div class="fitur"><div class="ic" style="background:#e8f5e9;color:#1b5e20"><span class="material-symbols-outlined">menu_book</span></div><h3>Jurnal Digital</h3><p>Kelola jurnal ilmiah dan publikasi sekolah terintegrasi lewat platform Jurnal Madrasah.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APLIKASI SEKOLAH -->
+  <section class="dk-section gray" id="aplikasi">
+    <div class="container">
+      <div class="eyebrow">Aplikasi Sekolah</div>
+      <h2>Menu Aplikasi ala Nams Jajanss</h2>
+      <p class="sub">Fitur dari referensi Blogger digabung ke modul Jurnal FazaCloud: pendataan, LMS, portal guru, perpustakaan, dan kelulusan.</p>
+      <div class="apps-grid">
+        <a class="app-card" href="jurnal/login.html"><span class="material-symbols-outlined">database</span><div><strong>Aplikasi Pendataan</strong><small>Master siswa, GTK, kelas, jadwal</small></div></a>
+        <a class="app-card" href="register.html"><span class="material-symbols-outlined">how_to_reg</span><div><strong>PPDB Online 2026</strong><small>Register sekolah dan siswa baru</small></div></a>
+        <a class="app-card" href="jurnal/login.html"><span class="material-symbols-outlined">computer</span><div><strong>E-Learning / LMS</strong><small>Jurnal mengajar, modul ajar, penilaian</small></div></a>
+        <a class="app-card" href="jurnal/login.html"><span class="material-symbols-outlined">groups</span><div><strong>Portal Guru & Tendik</strong><small>Ceklok GTK, QR absensi siswa</small></div></a>
+        <a class="app-card" href="jurnal/login.html"><span class="material-symbols-outlined">menu_book</span><div><strong>E-Perpustakaan</strong><small>Katalog literasi dan file download</small></div></a>
+        <a class="app-card" href="jurnal/login.html"><span class="material-symbols-outlined">school</span><div><strong>Pengumuman Kelulusan</strong><small>Kelulusan, rapor, pengumuman siswa</small></div></a>
       </div>
     </div>
   </section>

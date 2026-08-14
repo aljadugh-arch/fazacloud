@@ -4,7 +4,7 @@ const crypto = require("crypto");
 const jurnalSessions = new Map();
 const rateMap = new Map();
 const ROLE_KEYS = ["admin", "guru", "siswa", "wali", "kasir"];
-const COLLECTIONS = ["kelas","jadwal","absensi_siswa","absensi_ekskul","absensi_jamaah","absensi_kegiatan","absensi_kokurikuler","ceklok_guru","jurnal_mengajar","penilaian","tagihan","tabungan","produk_kanteen","transaksi_kanteen","mapel","tahun_ajaran","posting","catatan_kepribadian","modul_ajar","supervisi","broadcast","settings_jurnal","backup_jurnal","wali_kelas","pengajar","rapor","beasiswa","kalender_kbm","wa_gateway","notif_settings","ekskul","domain_setup","erkam","superadmin"];
+const COLLECTIONS = ["kelas","jadwal","absensi_siswa","absensi_ekskul","absensi_jamaah","absensi_kegiatan","absensi_kokurikuler","ceklok_guru","jurnal_mengajar","penilaian","tagihan","tabungan","produk_kanteen","transaksi_kanteen","mapel","tahun_ajaran","posting","catatan_kepribadian","modul_ajar","supervisi","broadcast","settings_jurnal","backup_jurnal","wali_kelas","pengajar","rapor","beasiswa","kalender_kbm","wa_gateway","notif_settings","ekskul","domain_setup","erkam","superadmin","perpustakaan","kelulusan"];
 const PREFIX = { guru:"GRU", siswa:"SIS", wali:"WLI", kasir:"KSR", kelas:"KLS", jadwal:"JDW", absensi_siswa:"ABS", absensi_ekskul:"EKS", absensi_jamaah:"JMH", absensi_kegiatan:"KGT", ceklok_guru:"CLK", jurnal_mengajar:"JMG", penilaian:"NIL", tagihan:"TGH", tabungan:"TAB", produk_kanteen:"PRD", transaksi_kanteen:"TRX" };
 
 function send(res, code, body, type = "application/json; charset=utf-8") {
@@ -227,7 +227,9 @@ async function handleJurnal(req, res, url, slug, tdb, saveFn) {
     "absensi-kokurikuler": "absensi_kokurikuler",
     "domain-setup": "domain_setup",
     erkam: "erkam",
-    superadmin: "superadmin"
+    superadmin: "superadmin",
+    perpustakaan: "perpustakaan",
+    kelulusan: "kelulusan"
   };
   if (parts[2] && genericRoutes[parts[2]]) return crudList(req,res,url,slug,tdb,saveFn,genericRoutes[parts[2]],["admin","guru","siswa","wali"]);
 

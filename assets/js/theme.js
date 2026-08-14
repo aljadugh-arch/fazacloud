@@ -94,6 +94,28 @@
         "--font-body": "'Helvetica Neue', Helvetica, Arial, sans-serif"
       },
       fontImport: null
+    },
+
+    namsjajanss: {
+      nama: "Nams Jajanss / MTs Miftahul Huda",
+      deskripsi: "Indigo-purple-pink gradient, sticky white nav, card hover, aplikasi sekolah ala Blogger modern.",
+      bodyClass: "tema-namsjajanss",
+      vars: {
+        "--heritage-navy": "#3730a3",
+        "--primary": "#6366f1",
+        "--primary-container": "#4f46e5",
+        "--academic-gold": "#ec4899",
+        "--secondary": "#4f46e5",
+        "--surface-tint": "#6366f1",
+        "--surface": "#f9fafb",
+        "--surface-container-low": "#eef2ff",
+        "--radius": "0.5rem",
+        "--radius-lg": "0.75rem",
+        "--radius-xl": "1rem",
+        "--font-head": "'Inter', -apple-system, 'Segoe UI', sans-serif",
+        "--font-body": "'Inter', -apple-system, 'Segoe UI', sans-serif"
+      },
+      fontImport: "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
     }
   };
 

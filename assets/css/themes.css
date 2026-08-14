@@ -70,3 +70,36 @@ body.footer-lebar .footer-bottom { padding-block: 24px; }
 
 /* ---------- Hero dengan gambar kustom dari admin ---------- */
 .hero[style*="cms-hero"], .page-hero[style*="cms-hero"] { background-size: cover !important; background-position: center !important; }
+
+
+/* ---------- NAMSJAJANSS: Blogger modern indigo-purple-pink ---------- */
+body.tema-namsjajanss { background: #f9fafb; font-family: 'Inter', -apple-system, 'Segoe UI', sans-serif; }
+body.tema-namsjajanss .topbar { background: linear-gradient(90deg,#4f46e5,#9333ea,#db2777); color:#fff; box-shadow: 0 2px 10px rgba(79,70,229,.18); }
+body.tema-namsjajanss .topbar .container { min-height: 38px; }
+body.tema-namsjajanss .mainnav { position: sticky; top: 0; z-index: 50; background:#fff; border:0; box-shadow:0 8px 24px rgba(15,23,42,.08); }
+body.tema-namsjajanss .mainnav .container { height: 80px; }
+body.tema-namsjajanss .brand .logo-badge { border-radius:999px; background:linear-gradient(135deg,#6366f1,#a855f7); box-shadow:0 10px 24px rgba(99,102,241,.25); }
+body.tema-namsjajanss .brand .b1 { color:#6366f1; font-weight:800; letter-spacing:-.03em; }
+body.tema-namsjajanss .brand .b2 { color:#6b7280; }
+body.tema-namsjajanss .nav-links a { color:#4b5563; border-radius:8px; font-weight:700; }
+body.tema-namsjajanss .nav-links a:hover, body.tema-namsjajanss .nav-links a.active { background:#eef2ff; color:#4f46e5; }
+body.tema-namsjajanss .nav-links a.active::after { display:none; }
+body.tema-namsjajanss .dropdown-menu { border-radius:12px; border:1px solid #e5e7eb; box-shadow:0 20px 45px rgba(15,23,42,.12); }
+body.tema-namsjajanss .hero { min-height: 620px; align-items:flex-end; padding-bottom:72px; }
+body.tema-namsjajanss .hero::after { background: linear-gradient(180deg,rgba(49,46,129,.28),rgba(79,70,229,.72)); }
+body.tema-namsjajanss .hero h1 { font-family:'Inter',sans-serif; font-size: clamp(36px,6vw,64px); letter-spacing:-.05em; font-weight:800; }
+body.tema-namsjajanss .kicker { background:rgba(238,242,255,.92); color:#4f46e5; border:1px solid rgba(99,102,241,.28); }
+body.tema-namsjajanss .btn-gold { background:linear-gradient(90deg,#6366f1,#9333ea); color:#fff; border-radius:12px; box-shadow:0 12px 24px rgba(99,102,241,.28); }
+body.tema-namsjajanss .btn-outline { border-radius:12px; border-color:#e0e7ff; background:#fff; color:#4f46e5; }
+body.tema-namsjajanss .feature-card, body.tema-namsjajanss .news-card, body.tema-namsjajanss .card { border-radius:16px; border:1px solid #e5e7eb; box-shadow:0 8px 22px rgba(15,23,42,.06); transition:transform .25s ease, box-shadow .25s ease; }
+body.tema-namsjajanss .feature-card:hover, body.tema-namsjajanss .news-card:hover, body.tema-namsjajanss .card:hover { transform:translateY(-5px); box-shadow:0 20px 45px rgba(15,23,42,.12); }
+body.tema-namsjajanss .feature-card .icon { background:#eef2ff; color:#6366f1; border-radius:12px; }
+body.tema-namsjajanss .section-head::before { background:linear-gradient(180deg,#6366f1,#ec4899); border-radius:99px; width:6px; }
+body.tema-namsjajanss .stats-band { background:linear-gradient(90deg,#4f46e5,#9333ea,#db2777); }
+body.tema-namsjajanss .stat .num { color:#fff; }
+body.tema-namsjajanss .cta-band { border-radius:20px; background:linear-gradient(135deg,#eef2ff,#fff,#fdf2f8); border:1px solid #e0e7ff; }
+body.tema-namsjajanss .footer { background:#111827; }
+body.tema-namsjajanss .app-grid { display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); }
+body.tema-namsjajanss .app-card { display:flex; align-items:center; gap:12px; padding:16px; background:#fff; border:1px solid #e5e7eb; border-radius:16px; box-shadow:0 8px 22px rgba(15,23,42,.06); text-decoration:none; color:#1f2937; }
+body.tema-namsjajanss .app-card:hover { background:#f5f3ff; color:#4f46e5; transform:translateY(-3px); }
+body.tema-namsjajanss .app-card .material-symbols-outlined { background:#eef2ff; color:#6366f1; border-radius:10px; padding:8px; }
