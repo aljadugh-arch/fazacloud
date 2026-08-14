@@ -262,7 +262,7 @@ async function handleApi(req, res, url) {
     if (!nama) return send(res, 400, { ok: false, error: "nama wajib" });
     const reserved = ["www", "admin", "api", "mail", "ftp", "app", "portal", "t"].includes(nama);
     const terpakai = db.tenants.some((t) => t.subdomain === nama) || tenantExists(nama);
-    return send(res, 200, { ok: true, tersedia: !terpakai && !reserved, subdomain: nama + ".fazacloud.web.id" });
+    return send(res, 200, { ok: true, tersedia: !terpakai && !reserved, subdomain: nama + ".fazacloud.my.id" });
   }
 
   // ---- REGISTER TENANT BARU (publik) -> BUAT INSTANCE ----
@@ -291,7 +291,7 @@ async function handleApi(req, res, url) {
         return send(res, 400, { ok: false, error: "Subdomain sudah dipakai. Pilih nama lain." });
       }
       slug = subdomain;
-      domain = subdomain + ".fazacloud.web.id";
+      domain = subdomain + ".fazacloud.my.id";
     } else {
       if (!domainCustom || !/^[a-z0-9.-]+\.[a-z]{2,}$/.test(domainCustom)) return send(res, 400, { ok: false, error: "Domain custom tidak valid." });
       if (db.tenants.some((t) => t.domain === domainCustom)) return send(res, 400, { ok: false, error: "Domain sudah terdaftar." });

@@ -45,7 +45,7 @@ Semua konten dinamis, berlaku untuk semua pengunjung dari perangkat mana pun:
 - Pengaturan Situs: nama sekolah, inisial logo, tagline, akreditasi, telepon, email, alamat,
   label PPDB, dan ganti kata sandi admin.
 - Pendaftaran lembaga baru: halaman `register.html` — lembaga lain mendaftar, memilih
-  subdomain gratis `*.fazacloud.web.id` atau domain custom, dan sistem LANGSUNG membuatkan
+  subdomain gratis `*.fazacloud.my.id` atau domain custom, dan sistem LANGSUNG membuatkan
   instance website sekolah terpisah (multi-tenant aktif). Setiap tenant punya situs, konten,
   dan panel admin sendiri yang terisolasi di `/t/<slug>/`. Data tenant di `server/tenants/<slug>.json`.
 - Landing page produk (`landing.html`, jadi halaman `/`) bergaya hosting modern (navy + hijau),

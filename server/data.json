@@ -68,7 +68,7 @@
     }
   ],
   "tema": {
-    "aktif": "namsjajanss",
+    "aktif": "luqman",
     "kustom": null,
     "heroGambar": "assets/img/hero-1786445143827-hero-kesiswaan.jpg",
     "footerSize": "compact"
@@ -190,5 +190,7 @@
   "ekskul": [],
   "domain_setup": [],
   "erkam": [],
-  "superadmin": []
+  "superadmin": [],
+  "perpustakaan": [],
+  "kelulusan": []
 }
