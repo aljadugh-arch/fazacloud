@@ -1,0 +1,36 @@
+# FazaCloud - robots.txt
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://fazacloud.my.id/sitemap.xml
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /server/
+Disallow: /node_modules/
+Disallow: /.git/
+Disallow: /assets/js/admin-*
+Disallow: /t/*/admin/
+Disallow: /t/*/jurnal/
+Disallow: /api/
+Disallow: /register.html
+Disallow: /jurnal/login.html
+
+# Allow public school pages
+Allow: /index.html
+Allow: /landing.html
+Allow: /profil.html
+Allow: /akademik.html
+Allow: /kesiswaan.html
+Allow: /berita.html
+Allow: /ppdb.html
+Allow: /kontak.html
+Allow: /artikel.html
+Allow: /fasilitas.html
+Allow: /galeri.html
+Allow: /sambutan.html
+Allow: /statistik.html
+
+# Crawl-delay
+Crawl-delay: 10

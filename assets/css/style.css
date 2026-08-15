@@ -99,8 +99,12 @@ h1, h2, h3, h4 { font-family: var(--font-head); font-weight: 600; line-height: 1
 .topbar .topbar-left { display: flex; gap: 16px; align-items: center; }
 .topbar .topbar-left span { display: inline-flex; align-items: center; gap: 6px; }
 .topbar .topbar-left .material-symbols-outlined { font-size: 16px; }
-.topbar .topbar-links { display: flex; gap: 20px; }
-@media (max-width: 767px) { .topbar .topbar-left span.hide-m { display: none; } }
+.topbar .topbar-links { display: flex; gap: 20px; align-items: center; }
+.topbar .social-links-topbar { display: flex; gap: 12px; margin-left: 16px; }
+.topbar .social-links-topbar a { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.1); color: #fff; font-size: 18px; transition: background 0.2s, color 0.2s; }
+.topbar .social-links-topbar a:hover { background: var(--academic-gold); color: var(--heritage-navy); }
+
+@media (max-width: 767px) { .topbar .topbar-left span.hide-m { display: none; } .topbar .social-links-topbar { display: none; } }
 
 .mainnav { background: var(--surface-white); border-bottom: 1px solid var(--surface-container); position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 8px rgba(0,0,0,0.04); }
 .mainnav .container { display: flex; align-items: center; gap: 24px; height: 72px; }
@@ -382,6 +386,10 @@ footer ul a { color: rgba(255,255,255,0.75); }
 footer ul a:hover { color: var(--academic-gold); text-decoration: none; }
 footer .contact-line { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: rgba(255,255,255,0.75); margin-bottom: 12px; }
 footer .contact-line .material-symbols-outlined { font-size: 18px; color: var(--academic-gold); flex: none; margin-top: 1px; }
+footer .social-links-footer { display: flex; gap: 12px; margin-top: 16px; }
+footer .social-links-footer a { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.1); color: #fff; font-size: 20px; transition: background 0.2s, color 0.2s; }
+footer .social-links-footer a:hover { background: var(--academic-gold); color: var(--heritage-navy); }
+
 .footer-bottom { border-top: 1px solid rgba(255,255,255,0.12); padding-block: 20px; font-size: 13px; color: rgba(255,255,255,0.55); display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; }
 
 /* ---------- Utility ---------- */
