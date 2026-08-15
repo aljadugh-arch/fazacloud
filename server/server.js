@@ -265,6 +265,20 @@ async function handleApi(req, res, url) {
     return send(res, 200, { ok: true, tersedia: !terpakai && !reserved, subdomain: nama + ".fazacloud.my.id" });
   }
 
+  // ---- CADDY ON-DEMAND TLS ASK ENDPOINT ----
+  if (cleanRoute === "/api/caddy/ask" && method === "GET") {
+    const domain = (url.searchParams.get("domain") || "").toLowerCase();
+    if (!domain) return send(res, 400, { ok: false, error: "domain wajib" });
+    // Hanya izinkan subdomain fazacloud.my.id yang terdaftar di tenants
+    const allowed = domain.endsWith(".fazacloud.my.id");
+    const isTenant = allowed && db.tenants.some((t) => t.subdomain && domain === t.subdomain + ".fazacloud.my.id");
+    const isCustom = db.tenants.some((t) => t.domain && domain === t.domain);
+    if (isTenant || isCustom || domain === "fazacloud.my.id" || domain === "www.fazacloud.my.id") {
+      return send(res, 200, { ok: true });
+    }
+    return send(res, 404, { ok: false, error: "domain tidak terdaftar" });
+  }
+
   // ---- REGISTER TENANT BARU (publik) -> BUAT INSTANCE ----
   if (cleanRoute === "/api/register" && method === "POST") {
     const ip = req.socket.remoteAddress || "unknown";
