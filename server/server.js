@@ -51,6 +51,14 @@ function defaultContent(namaSekolah, inisial, email) {
     sambutan: null,
     ppdb: null,
     fasilitas: null,
+    aplikasi: [
+      { nama: "Aplikasi Pendataan", ikon: "database", deskripsi: "Master siswa, GTK, kelas, jadwal", url: "jurnal/login.html" },
+      { nama: "PPDB Online", ikon: "how_to_reg", deskripsi: "Pendaftaran peserta didik baru", url: "ppdb.html" },
+      { nama: "E-Learning / LMS", ikon: "computer", deskripsi: "Jurnal mengajar, modul ajar, penilaian", url: "jurnal/login.html" },
+      { nama: "Portal Guru & Tendik", ikon: "groups", deskripsi: "Ceklok GTK, QR absensi siswa", url: "jurnal/login.html" },
+      { nama: "E-Perpustakaan", ikon: "menu_book", deskripsi: "Basis menu literasi & download", url: "jurnal/login.html" },
+      { nama: "Pengumuman Kelulusan", ikon: "school", deskripsi: "Rapor, kelulusan, pengumuman siswa", url: "jurnal/login.html" }
+    ],
     pendaftar: [],
     pesan: [],
     admin: { email: email || ENV_EMAIL, password: ENV_PASSWORD }
@@ -285,6 +293,12 @@ async function handleApi(req, res, url) {
       return send(res, 200, { ok: true });
     }
     return send(res, 404, { ok: false, error: "domain tidak terdaftar" });
+  }
+
+  // ---- PUBLIC CONTENT API (no auth) ----
+  const publicResources = ["identitas", "tema", "artikel", "galeri", "guru", "statistik", "sambutan", "ppdb", "fasilitas", "aplikasi"];
+  if (method === "GET" && publicResources.includes(resource)) {
+    return send(res, 200, { ok: true, data: cdb[resource] || null });
   }
 
   // ---- REGISTER TENANT BARU (publik) -> BUAT INSTANCE ----

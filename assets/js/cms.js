@@ -37,7 +37,7 @@
 
   // Ambil semua konten sekaligus
   function fetchAll() {
-    var resources = ["identitas", "artikel", "galeri", "guru", "statistik", "sambutan", "ppdb", "fasilitas"];
+    var resources = ["identitas", "artikel", "galeri", "guru", "statistik", "sambutan", "ppdb", "fasilitas", "aplikasi"];
     return Promise.all(resources.map(function (r) {
       return fetch(apiUrl(r)).then(function (res) { return res.ok ? res.json() : { data: null }; })
         .then(function (j) { return j.data; })
@@ -236,6 +236,18 @@
     }
   }
 
+  function renderAplikasi(arr) {
+    var grid = document.querySelector("[data-cms-aplikasi]");
+    if (grid && arr && arr.length) {
+      grid.innerHTML = arr.map(function (a) {
+        return '<a class="app-card" href="' + esc(a.url || "#") + '">' +
+          '<span class="material-symbols-outlined">' + esc(a.ikon || "apps") + '</span>' +
+          '<div><strong>' + esc(a.nama) + '</strong><small>' + esc(a.deskripsi || "") + '</small></div>' +
+          '</a>';
+      }).join("");
+    }
+  }
+
   function renderPpdb(d) {
     if (!d) return;
     var judul = document.querySelector("[data-cms-ppdb-judul]");
@@ -285,6 +297,7 @@
       renderGaleri(d.galeri);
       renderGuru(d.guru);
       renderFasilitas(d.fasilitas);
+      renderAplikasi(d.aplikasi);
       renderPpdb(d.ppdb);
     });
   });
