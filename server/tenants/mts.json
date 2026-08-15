@@ -1,0 +1,32 @@
+{
+  "identitas": {
+    "namaSekolah": "MTs Plus Sunan Drajat 7 Palang",
+    "inisial": "MPS",
+    "tagline": "Prestasi · Akhlak · Masa Depan",
+    "akreditasi": "Terakreditasi A",
+    "telepon": "(021) 555-1234",
+    "email": "mtsplussd7palang@gmail.com",
+    "alamat": "Jl. Pendidikan No. 1",
+    "tahunBerdiri": 1985,
+    "ppdbLabel": "PPDB 2024"
+  },
+  "tema": {
+    "aktif": "nusantara",
+    "kustom": null,
+    "heroGambar": "",
+    "footerSize": "normal"
+  },
+  "artikel": null,
+  "galeri": null,
+  "guru": null,
+  "statistik": null,
+  "sambutan": null,
+  "ppdb": null,
+  "fasilitas": null,
+  "pendaftar": [],
+  "pesan": [],
+  "admin": {
+    "email": "mtsplussd7palang@gmail.com",
+    "password": "42b63153f2ac22cf086fe475cf9ccdd3edea39aa0581d85645dce1c92cbde4af"
+  }
+}
