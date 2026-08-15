@@ -175,11 +175,19 @@ function sanitize(s) {
   return String(s || "").replace(/[<>'"]/g, c => ({ "<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;" }[c]));
 }
 
-// Tentukan konteks tenant dari URL path (/t/<slug>/...) SAJA
-// X-Tenant header dihapus karena rentan injection tanpa auth
+// Tentukan konteks tenant dari URL path (/t/<slug>/...) ATAU Host header (custom domain)
 function resolveTenant(url, req) {
+  // 1. Cek path /t/<slug>/
   const m = url.pathname.match(/^\/t\/([a-z0-9-]+)/);
   if (m) return m[1];
+
+  // 2. Cek Host header untuk custom domain
+  const host = (req.headers.host || "").toLowerCase().split(":")[0];
+  if (host && host !== "fazacloud.my.id" && host !== "www.fazacloud.my.id" && !host.endsWith(".fazacloud.my.id")) {
+    const tenant = db.tenants.find(t => t.domain && t.domain.toLowerCase() === host);
+    if (tenant) return tenant.slug;
+  }
+
   return null;
 }
 
@@ -420,16 +428,35 @@ async function handleApi(req, res, url) {
 function serveStatic(req, res, url) {
   let p = decodeURIComponent(url.pathname);
 
-  // Tenant site: /t/<slug>/... -> sajikan file yang sama dari ROOT,
-  // tapi frontend akan otomatis memakai konten tenant lewat prefix /t/<slug> pada API.
+  // Tentukan apakah request untuk tenant (path /t/<slug>/ ATAU custom domain Host)
+  let tenantSlug = null;
   const tm = p.match(/^\/t\/([a-z0-9-]+)(\/.*)?$/);
   if (tm) {
-    const slug = tm[1];
-    if (!tenantExists(slug)) return send(res, 404, "Sekolah tidak ditemukan", "text/plain");
-    let rest = tm[2] || "/";
-    if (rest === "/") rest = "/index.html";
-    p = rest; // sajikan file bersama; JS membaca slug dari location.pathname
+    tenantSlug = tm[1];
   } else {
+    // Cek Host header untuk custom domain
+    const host = (req.headers.host || "").toLowerCase().split(":")[0];
+    if (host && host !== "fazacloud.my.id" && host !== "www.fazacloud.my.id" && !host.endsWith(".fazacloud.my.id")) {
+      const tenant = db.tenants.find(t => t.domain && t.domain.toLowerCase() === host);
+      if (tenant) tenantSlug = tenant.slug;
+    }
+  }
+
+  const isTenantPage = !!tenantSlug;
+
+  if (isTenantPage) {
+    // Tenant site: /t/<slug>/... atau custom domain -> sajikan file dari ROOT
+    // frontend akan otomatis memakai konten tenant lewat slug dari API/Host
+    if (p === "/" || p === "") p = "/index.html";
+    if (p.endsWith("/")) p += "index.html";
+    // Untuk path /t/<slug>/... hapus prefix
+    if (tm) {
+      let rest = tm[2] || "/";
+      if (rest === "/") rest = "/index.html";
+      p = rest;
+    }
+  } else {
+    // Root domain fazacloud.my.id
     if (p === "/") p = "/landing.html";
     if (p.endsWith("/")) p += "index.html";
   }
@@ -442,7 +469,6 @@ function serveStatic(req, res, url) {
   if (blocked.some(b => relPath.startsWith(b))) {
     return send(res, 403, "Forbidden", "text/plain");
   }
-  const isTenantPage = /^\/t\/[a-z0-9-]+\//.test(decodeURIComponent(url.pathname));
   fs.readFile(filePath, (err, data) => {
     if (err) {
       if (!path.extname(p)) {
