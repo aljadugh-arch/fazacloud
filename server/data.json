@@ -77,7 +77,19 @@
     "email": "admin@smanusantara.sch.id",
     "password": "488694d6971b14185b592335cbf84387a1abf786be20f3606053d244e28e62c6"
   },
-  "tenants": [],
+  "tenants": [
+    {
+      "id": "TNT-1786768877281",
+      "slug": "mts",
+      "namaLembaga": "MTs Plus Sunan Drajat 7 Palang",
+      "email": "mtsplussd7palang@gmail.com",
+      "tipeDomain": "custom",
+      "subdomain": null,
+      "domain": "mts.sunandrajat7.web.id",
+      "status": "aktif",
+      "dibuat": "2026-08-15T04:41:17.281Z"
+    }
+  ],
   "users": {
     "guru": [
       {

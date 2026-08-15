@@ -7,10 +7,13 @@
 (function () {
   "use strict";
 
-  // ---- Deteksi konteks tenant dari URL: /t/<slug>/... ----
+  // ---- Deteksi konteks tenant dari URL: /t/<slug>/... ATAU custom domain ----
   var TENANT = (function () {
     var m = location.pathname.match(/^\/t\/([a-z0-9-]+)/);
-    return m ? m[1] : null;
+    if (m) return m[1];
+    // Custom domain: cek meta tag yang di-inject server
+    var meta = document.querySelector('meta[name="x-tenant-slug"]');
+    return meta ? meta.getAttribute('content') : null;
   })();
   // prefix untuk API & link internal
   var TP = TENANT ? "/t/" + TENANT : "";

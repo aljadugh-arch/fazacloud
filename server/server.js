@@ -480,11 +480,19 @@ function serveStatic(req, res, url) {
       }
       return send(res, 404, "404 Not Found", "text/plain");
     }
-    // inject <base href="/"> untuk halaman tenant supaya asset relatif benar
+    // inject <base href="/"> dan meta x-tenant-slug untuk halaman tenant supaya asset relatif benar & cms.js tahu slug
     if (isTenantPage && filePath.endsWith(".html")) {
       let html = data.toString("utf8");
+      let headReplacement = '<head><base href="/">';
+      // Inject tenant slug meta untuk cms.js di custom domain
+      if (tenantSlug) {
+        headReplacement += '<meta name="x-tenant-slug" content="' + tenantSlug + '">';
+      }
       if (!/<base /i.test(html)) {
-        html = html.replace(/<head>/i, '<head><base href="/">');
+        html = html.replace(/<head>/i, headReplacement);
+      } else if (tenantSlug && !/x-tenant-slug/i.test(html)) {
+        // Already has base but missing x-tenant-slug
+        html = html.replace(/<head>/i, '<head><meta name="x-tenant-slug" content="' + tenantSlug + '">');
       }
       return send(res, 200, html, "text/html; charset=utf-8");
     }
