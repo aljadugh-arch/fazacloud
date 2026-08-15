@@ -15,8 +15,12 @@
     var meta = document.querySelector('meta[name="x-tenant-slug"]');
     return meta ? meta.getAttribute('content') : null;
   })();
-  // prefix untuk API & link internal
-  var TP = TENANT ? "/t/" + TENANT : "";
+
+  // Custom domain = Host bukan fazacloud.my.id dan bukan subdomain *.fazacloud.my.id
+  var IS_CUSTOM_DOMAIN = TENANT && !location.hostname.endsWith(".fazacloud.my.id") && location.hostname !== "fazacloud.my.id" && location.hostname !== "www.fazacloud.my.id";
+
+  // prefix untuk API & link internal: /t/<slug> untuk path-based, "" untuk custom domain
+  var TP = TENANT && !IS_CUSTOM_DOMAIN ? "/t/" + TENANT : "";
   function apiUrl(r) { return TP + "/api/" + r; }
   function pageUrl(p) { return TP + "/" + p; }
 

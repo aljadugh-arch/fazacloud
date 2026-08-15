@@ -494,6 +494,28 @@ function serveStatic(req, res, url) {
         // Already has base but missing x-tenant-slug
         html = html.replace(/<head>/i, '<head><meta name="x-tenant-slug" content="' + tenantSlug + '">');
       }
+      // Server-side render identitas dasar tenant supaya custom domain langsung berubah tanpa tunggu JS/browser cache.
+      const tdb = tenantSlug ? contentDb(tenantSlug) : null;
+      const idn = tdb && tdb.identitas ? tdb.identitas : null;
+      if (idn) {
+        const nama = sanitize(idn.namaSekolah || "SMA Nusantara");
+        const inisial = sanitize(idn.inisial || "SN");
+        const tagline = sanitize(idn.tagline || "Prestasi · Akhlak · Masa Depan");
+        const akreditasi = sanitize(idn.akreditasi || "Terakreditasi A");
+        const telepon = sanitize(idn.telepon || "(021) 555-1234");
+        const email = sanitize(idn.email || "info@smanusantara.sch.id");
+        const alamat = sanitize(idn.alamat || "Jl. Pendidikan No. 1, Jakarta Pusat, DKI Jakarta 10110");
+        html = html
+          .replace(/SMA NUSANTARA/g, nama)
+          .replace(/SMA Nusantara/g, nama)
+          .replace(/SN/g, inisial)
+          .replace(/Prestasi &middot; Akhlak &middot; Masa Depan/g, tagline.replace(/ · /g, " &middot; "))
+          .replace(/Prestasi · Akhlak · Masa Depan/g, tagline)
+          .replace(/Terakreditasi A/g, akreditasi)
+          .replace(/\(021\) 555-1234/g, telepon)
+          .replace(/info@smanusantara\.sch\.id/g, email)
+          .replace(/Jl\. Pendidikan No\. 1, Jakarta Pusat, DKI Jakarta 10110/g, alamat);
+      }
       return send(res, 200, html, "text/html; charset=utf-8");
     }
     send(res, 200, data, MIME[path.extname(filePath).toLowerCase()] || "application/octet-stream");
