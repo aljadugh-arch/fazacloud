@@ -162,7 +162,18 @@
       "ruang": "R1"
     }
   ],
-  "absensi_siswa": [],
+  "absensi_siswa": [
+    {
+      "id": "ABS-1787024614030-c86d",
+      "siswa_id": "SIS-DEMO",
+      "tanggal": "2026-08-18",
+      "jenis": "hadir",
+      "kelas": "X-A",
+      "keterangan": "Batch rombel",
+      "jam_datang": "2026-08-18T03:43:34.030Z",
+      "jam_pulang": null
+    }
+  ],
   "absensi_ekskul": [],
   "absensi_jamaah": [],
   "absensi_kegiatan": [],

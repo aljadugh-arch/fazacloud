@@ -77,7 +77,19 @@ function page(url, arr) {
 function save(slug, tdb, saveFn) { saveFn(slug, tdb); }
 function stripPassword(u) { const x = Object.assign({}, u); delete x.password; return x; }
 function getUser(tdb, role, idv) { return (tdb.users[role] || []).find(x => x.id === idv); }
-function siswaByAny(tdb, key) { return tdb.users.siswa.find(s => s.id === key || s.qr_token === key); }
+function siswaByAny(tdb, key) { return tdb.users.siswa.find(s => s.id === key || s.qr_token === key || s.nis === key || s.nisn === key); }
+function siswaLoginMatch(s, username, password) {
+  const u = String(username || "").trim();
+  if (!u || s.aktif === false) return false;
+  if ((s.email && s.email === u && verifyPassword(password, s.password)) || (s.nis && s.nis === u && password === s.nis) || (s.nisn && s.nisn === u && password === s.nisn)) return true;
+  return false;
+}
+function waliFromSiswaLogin(tdb, username, password) {
+  const s = tdb.users.siswa.find(x => siswaLoginMatch(x, username, password));
+  if (!s) return null;
+  return { id:"WALI-" + s.id, nama:"Wali " + (s.nama || s.nis || s.id), siswa_ids:[s.id] };
+}
+function kelasMatch(s, kelas) { return !kelas || s.kelas === kelas || s.kelas_id === kelas; }
 function enrichAbsensi(tdb, rows) {
   return rows.map(r => { const s = getUser(tdb,"siswa",r.siswa_id) || {}; return Object.assign({}, r, { siswa_nama:s.nama || r.siswa_id, kelas:s.kelas || r.kelas }); });
 }
@@ -138,10 +150,14 @@ async function handleJurnal(req, res, url, slug, tdb, saveFn) {
     let u = null;
     if (role === "admin") {
       if (tdb.admin && tdb.admin.email === b.email && verifyPassword(b.password, tdb.admin.password)) u = { id:"ADMIN", nama:"Admin", email:b.email };
+    } else if (role === "siswa") {
+      u = tdb.users.siswa.find(x => siswaLoginMatch(x, b.email || b.username, b.password));
+    } else if (role === "wali") {
+      u = (tdb.users.wali || []).find(x => x.email === b.email && verifyPassword(b.password, x.password) && x.aktif !== false) || waliFromSiswaLogin(tdb, b.email || b.username, b.password);
     } else {
       u = (tdb.users[role] || []).find(x => x.email === b.email && verifyPassword(b.password, x.password) && x.aktif !== false);
     }
-    if (!u) return send(res,401,{ok:false,error:"Email atau kata sandi salah"});
+    if (!u) return send(res,401,{ok:false,error:"Email/NIS/NISN atau kata sandi salah"});
     return send(res,200,{ok:true,token:tokenFor(role,u,slug),role,id:u.id,nama:u.nama,slug});
   }
   if (clean === "/api/jurnal/dashboard" && method === "GET") {
@@ -177,6 +193,18 @@ async function handleJurnal(req, res, url, slug, tdb, saveFn) {
     if (method === "GET") { const a = auth(req); if (!a) return send(res,401,{ok:false,error:"Unauthorized"}); return send(res,200,{ok:true,data:page(url,enrichAbsensi(tdb,filterRows(url,tdb.absensi_siswa,["tanggal","siswa_id","kelas_id"]))) }); }
     if (!requireRole(req,["admin","guru"])) return send(res,401,{ok:false,error:"Unauthorized"});
     const b = await readBody(req); const itemId = parts[4];
+    if (method === "POST" && itemId === "batch") {
+      const tanggal = b.tanggal || today();
+      const ids = Array.isArray(b.siswa_ids) && b.siswa_ids.length ? b.siswa_ids : tdb.users.siswa.filter(s => kelasMatch(s, b.kelas || b.kelas_id)).map(s => s.id);
+      const rows = ids.map(sid => {
+        const s = getUser(tdb,"siswa",sid); const jenis = (b.overrides && b.overrides[sid]) || b.jenis || "hadir";
+        let row = tdb.absensi_siswa.find(x => x.siswa_id === sid && x.tanggal === tanggal);
+        const patch = { siswa_id:sid, tanggal, jenis, kelas:s && s.kelas, keterangan:b.keterangan || "Batch rombel", jam_datang: jenis === "hadir" ? (b.jam_datang || nowIso()) : null, jam_pulang:b.jam_pulang || null };
+        if (row) Object.assign(row, patch); else { row = Object.assign({ id:id("ABS") }, patch); tdb.absensi_siswa.unshift(row); }
+        return row;
+      });
+      save(slug,tdb,saveFn); return send(res,200,{ok:true,data:enrichAbsensi(tdb,rows)});
+    }
     if (method === "POST") { const row = Object.assign({ id:id("ABS"), tanggal:today(), jenis:"hadir", jam_datang:nowIso(), jam_pulang:null }, b); tdb.absensi_siswa.unshift(row); save(slug,tdb,saveFn); return send(res,200,{ok:true,data:row}); }
     if (method === "PUT" && itemId) { const i=tdb.absensi_siswa.findIndex(x=>x.id===itemId); if(i<0)return send(res,404,{ok:false,error:"Data tidak ditemukan"}); tdb.absensi_siswa[i]=Object.assign({},tdb.absensi_siswa[i],b); save(slug,tdb,saveFn); return send(res,200,{ok:true,data:tdb.absensi_siswa[i]}); }
   }

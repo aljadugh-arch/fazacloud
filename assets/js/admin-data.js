@@ -91,6 +91,14 @@
       { id: "fs2", nama: "Perpustakaan Digital", ikon: "menu_book", deskripsi: "Koleksi 25.000+ buku dan akses jurnal daring." },
       { id: "fs3", nama: "Sport Hall", ikon: "sports_basketball", deskripsi: "Gedung olahraga indoor untuk basket, futsal, dan bulu tangkis." },
       { id: "fs4", nama: "Lab Komputer & Robotika", ikon: "computer", deskripsi: "Ruang pembelajaran teknologi dan klub robotika." }
+    ],
+    aplikasi: [
+      { id: "app1", nama: "Aplikasi Pendataan", ikon: "database", deskripsi: "Master siswa, GTK, kelas, jadwal", url: "jurnal/login.html" },
+      { id: "app2", nama: "PPDB Online", ikon: "how_to_reg", deskripsi: "Pendaftaran peserta didik baru", url: "ppdb.html" },
+      { id: "app3", nama: "E-Learning / LMS", ikon: "computer", deskripsi: "Jurnal mengajar, modul ajar, penilaian", url: "jurnal/login.html" },
+      { id: "app4", nama: "Portal Guru & Tendik", ikon: "groups", deskripsi: "Ceklok GTK, QR absensi siswa", url: "jurnal/login.html" },
+      { id: "app5", nama: "E-Perpustakaan", ikon: "menu_book", deskripsi: "Basis menu literasi & download", url: "jurnal/login.html" },
+      { id: "app6", nama: "Pengumuman Kelulusan", ikon: "school", deskripsi: "Rapor, kelulusan, pengumuman siswa", url: "jurnal/login.html" }
     ]
   };
 
@@ -222,6 +230,7 @@
     guru: crud("guru"),
     statistik: crud("statistik"),
     fasilitas: crud("fasilitas"),
+    aplikasi: crud("aplikasi"),
 
     // Objek tunggal
     getSambutan: function () { return get("sambutan").then(function (d) { return d || SEED.sambutan; }); },

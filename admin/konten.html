@@ -37,6 +37,7 @@
       <button class="active" data-tab="statistik">Statistik Beranda</button>
       <button data-tab="sambutan">Sambutan Kepala Sekolah</button>
       <button data-tab="fasilitas">Fasilitas</button>
+      <button data-tab="aplikasi">Aplikasi Sekolah</button>
       <button data-tab="ppdb">Konten PPDB</button>
     </div>
 
@@ -86,6 +87,20 @@
         <div id="fasilitasItems"></div>
         <div class="form-actions" style="margin-top:16px">
           <button class="btn btn-navy" id="btnSimpanFasilitas"><span class="material-symbols-outlined">save</span> Simpan Fasilitas</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== APLIKASI SEKOLAH ========== -->
+    <div class="tab-pane" id="tab-aplikasi">
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Aplikasi Sekolah (Beranda)</h2>
+          <button class="btn btn-sm btn-navy" id="btnTambahAplikasi"><span class="material-symbols-outlined">add</span> Tambah</button>
+        </div>
+        <div id="aplikasiItems"></div>
+        <div class="form-actions" style="margin-top:16px">
+          <button class="btn btn-navy" id="btnSimpanAplikasi"><span class="material-symbols-outlined">save</span> Simpan Aplikasi</button>
         </div>
       </div>
     </div>
@@ -245,6 +260,51 @@
       DB.fasilitas.simpanSemua(arr).then(function () { AdminShell.toast("Fasilitas disimpan."); });
     });
     renderFasilitas();
+
+    // ---------- Aplikasi Sekolah ----------
+    function renderAplikasi() {
+      DB.aplikasi.get().then(function (arr) {
+        document.getElementById("aplikasiItems").innerHTML = arr.map(function (a, i) {
+          return '<div class="repeat-item" data-aid="' + a.id + '"><div class="repeat-head"><strong>Aplikasi #' + (i + 1) + "</strong>" +
+            '<button class="btn-icon danger" type="button" data-hapus-aplikasi="' + a.id + '"><span class="material-symbols-outlined">delete</span></button></div>' +
+            '<div class="form-row two">' +
+            '<div class="field"><label>Nama</label><input type="text" data-a-nama value="' + esc(a.nama) + '"></div>' +
+            '<div class="field"><label>Ikon (Material Symbols)</label><input type="text" data-a-ikon value="' + esc(a.ikon || "apps") + '"></div>' +
+            "</div>" +
+            '<div class="field"><label>Deskripsi</label><input type="text" data-a-deskripsi value="' + esc(a.deskripsi || "") + '"></div>' +
+            '<div class="field"><label>Link</label><input type="text" data-a-url value="' + esc(a.url || "#") + '"></div></div>';
+        }).join("");
+      });
+    }
+    document.getElementById("btnTambahAplikasi").addEventListener("click", function () {
+      DB.aplikasi.get().then(function (arr) {
+        arr.push({ id: "app" + Date.now(), nama: "Aplikasi Baru", ikon: "apps", deskripsi: "", url: "#" });
+        return DB.aplikasi.simpanSemua(arr);
+      }).then(renderAplikasi);
+    });
+    document.getElementById("aplikasiItems").addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-hapus-aplikasi]");
+      if (btn && confirm("Hapus aplikasi ini?")) {
+        DB.aplikasi.hapus(btn.getAttribute("data-hapus-aplikasi")).then(function () {
+          renderAplikasi();
+          AdminShell.toast("Aplikasi dihapus.");
+        });
+      }
+    });
+    document.getElementById("btnSimpanAplikasi").addEventListener("click", function () {
+      var arr = [];
+      document.querySelectorAll("#aplikasiItems .repeat-item").forEach(function (item) {
+        arr.push({
+          id: item.getAttribute("data-aid"),
+          nama: item.querySelector("[data-a-nama]").value.trim(),
+          ikon: item.querySelector("[data-a-ikon]").value.trim() || "apps",
+          deskripsi: item.querySelector("[data-a-deskripsi]").value.trim(),
+          url: item.querySelector("[data-a-url]").value.trim() || "#"
+        });
+      });
+      DB.aplikasi.simpanSemua(arr).then(function () { AdminShell.toast("Aplikasi disimpan."); });
+    });
+    renderAplikasi();
 
     // ---------- PPDB ----------
     function renderPpdbInfo() {
